@@ -18,5 +18,16 @@ def extract_calendar_data():
     # Replace tab-based folded lines with space-based folded lines
 
     calendar = Calendar.from_ical(response.content)
+    calendar_events = []
+    for calendar_event in calendar.walk("vevent"):
+        calendar_events.append({
+            "title": str(calendar_event.get("title")),
+            "summary": str(calendar_event.get("summary")),
+            "description": str(calendar_event.get("description")),
+            "location": str(calendar_event.get("location")),
+            "start": str(calendar_event.get("dtstart").dt),
+            "end": str(calendar_event.get("dtend").dt),
+            "categories": str(calendar_event.get("categories")),
+        })
 
-    return calendar
+    return calendar_events
