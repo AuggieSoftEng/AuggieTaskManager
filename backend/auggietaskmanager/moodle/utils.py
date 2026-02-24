@@ -1,8 +1,8 @@
 # Put all helper functions here
 import requests
 from icalendar import Calendar
-from datetime import datetime, timedelta
 import pytz
+
 
 def extract_calendar_data():
     """Extracts the data from the calendar_url and puts into json format
@@ -12,7 +12,7 @@ def extract_calendar_data():
     Returns:
         Calendar: calendar object containing all the events in the calendar
     """
-    central_tz = pytz.timezone('America/Chicago')
+    central_tz = pytz.timezone("America/Chicago")
     calendar_url = "https://moodle.augsburg.edu/moodle2021/calendar/export_execute.php?userid=12513&authtoken=79c6051c6291eedd78af084112b043c2a57532cc&preset_what=all&preset_time=custom"
 
     response = requests.get(calendar_url)
@@ -22,14 +22,13 @@ def extract_calendar_data():
     calendar = Calendar.from_ical(response.content)
     calendar_events = []
     for calendar_event in calendar.walk("vevent"):
-        calendar_events.append({
-            "title": str(calendar_event.get("title")),
-            "summary": str(calendar_event.get("summary")),
-            "description": str(calendar_event.get("description")),
-            "location": str(calendar_event.get("location")),
-            "start": str(calendar_event.get("dtstart").dt - timedelta(hours=6)),  # Convert to Central Time by subtracting 6 hours
-            "end": str(calendar_event.get("dtend").dt - timedelta(hours=6)),  # Convert to Central Time by subtracting 6 hours
-            "categories": str(calendar_event.get("categories").cats[0].to_ical().decode('utf-8'))[:15],
-        })
+        calendar_events.append(
+            {
+                "title": str(calendar_event.get("summary")),
+                "description": str(calendar_event.get("description")),
+                "due_date": calendar_event.get("dtend").dt.astimezone(central_tz).isoformat(),  # Convert to Central Time by subtracting 6 hours
+                "course": str(calendar_event.get("categories").cats[0].to_ical().decode("utf-8"))[:15],
+            }
+        )
 
     return calendar_events
