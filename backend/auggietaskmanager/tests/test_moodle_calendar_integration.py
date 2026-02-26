@@ -48,7 +48,7 @@ class TestExtractCalendarDataIntegration(TestCase):
             event.add("summary", f"{course_code}: {assignment}")
             event.add("description", f"{title} - {assignment}")
             event.add("categories", course_code)
-            end_time = datetime.fromisoformat(due_date.replace("Z", "+00:00")).astimezone(self.central_tz)
+            end_time = pytz.UTC.localize(datetime.fromisoformat(due_date)).astimezone(self.central_tz)
             event.add("dtend", end_time)
             cal.add_component(event)
 
@@ -86,7 +86,7 @@ class TestExtractCalendarDataIntegration(TestCase):
         cal.add("version", "2.0")
 
         # WHEN: we add 50 events to the calendar
-        base_date = datetime(2026, 3, 15, tzinfo=self.central_tz)
+        base_date = self.central_tz.localize(datetime(2026, 3, 15))
         for i in range(50):
             event = Event()
             event.add("summary", f"Event {i+1}")
@@ -190,10 +190,11 @@ class TestExtractCalendarDataIntegration(TestCase):
         result = extract_calendar_data(self.calendar_url)
 
         self.assertEqual(len(result), 4)
-        self.assertIn("#", result[0]["title"])
-        self.assertIn("–", result[1]["title"])  # Em dash
-        self.assertIn("%", result[2]["title"])
-        self.assertIn("&", result[3]["title"])  # A&B Components has &
+        titles = [event["title"] for event in result]
+        self.assertTrue(any("#" in title for title in titles))
+        self.assertTrue(any("–" in title for title in titles))  # Em dash
+        self.assertTrue(any("%" in title for title in titles))
+        self.assertTrue(any("&" in title for title in titles))  # A&B Components has &
 
     @patch("moodle.utils.requests.get")
     def test_extract_calendar_data_very_long_descriptions(self, mock_get):

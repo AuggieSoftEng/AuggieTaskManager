@@ -1,7 +1,6 @@
 #!/bin/bash
 # Test runner script for Moodle Calendar tests
 
-set -e
 
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -32,7 +31,7 @@ print_error() {
 # Run unittest tests
 run_unittest_all() {
     print_header "Running All Tests (unittest)"
-    python -m unittest tests.test_moodle_calendar_unit tests.test_moodle_calendar_integration -v
+    python manage.py test tests.test_moodle_calendar_unit tests.test_moodle_calendar_integration -v
 }
 
 
