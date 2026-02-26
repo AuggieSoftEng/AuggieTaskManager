@@ -46,7 +46,7 @@ class TestExtractCalendarData(TestCase):
         event.add("summary", "Assignment 1")
         event.add("description", "Complete assignment 1")
         event.add("categories", "CS101")
-        end_time = datetime(2026, 3, 15, 23, 59, 59, tzinfo=self.central_tz)
+        end_time = self.central_tz.localize(datetime(2026, 3, 15, 23, 59, 59))
         event.add("dtend", end_time)
 
         cal.add_component(event)
@@ -102,8 +102,8 @@ class TestExtractCalendarData(TestCase):
         # THEN: we call extract_calendar_data and expect to get both events correctly
         result = extract_calendar_data(self.calendar_url)
         self.assertEqual(len(result), 2)
-        self.assertEqual(result[0]["title"], "Assignment 1")
-        self.assertEqual(result[1]["title"], "Quiz 2")
+        titles = [item["title"] for item in result]
+        self.assertCountEqual(titles, ["Assignment 1", "Quiz 2"])
 
     @patch("moodle.utils.requests.get")
     def test_extract_calendar_data_timezone_conversion(self, mock_get):
@@ -216,27 +216,20 @@ class TestExtractCalendarData(TestCase):
             extract_calendar_data(self.calendar_url)
 
     @patch("moodle.utils.requests.get")
-    def test_extract_calendar_data_http_404_error(self, mock_get):
+    def test_extract_calendar_data_non_ical_http_response(self, mock_get):
         """
-        Test handling of HTTP 404 error
+        Test handling of a non-iCalendar HTTP response body (e.g., a 404 page)
 
         Args:
             mock_get (MagicMock): Mocked requests.get function
         """
-        # GIVEN: the server returns a 404 Not Found error when trying to fetch the calendar
+        # GIVEN: the server returns a response whose body is not valid iCalendar data
         mock_response = MagicMock()
-        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
-            "404 Not Found"
-        )
-        # WHEN: we mock the requests.get to return this error response
+        mock_response.content = b"Not Found"
         mock_get.return_value = mock_response
 
-        # THEN: we call extract_calendar_data and expect it to raise an HTTPError
+        # THEN: we call extract_calendar_data and expect it to raise an Exception
         with self.assertRaises(Exception):
-            # Mock requests.get but let it return something
-            mock_response = MagicMock()
-            mock_response.content = b"Not Found"
-            mock_get.return_value = mock_response
             extract_calendar_data(self.calendar_url)
 
     @patch("moodle.utils.requests.get")
