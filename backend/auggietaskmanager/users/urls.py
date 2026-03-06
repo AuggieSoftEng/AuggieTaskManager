@@ -4,4 +4,6 @@ from . import views
 
 app_name = "users"
 
-urlpatterns = []
+urlpatterns = [
+    path("signup/", views.UserSignUpView.as_view(), name="signup"),
+]
