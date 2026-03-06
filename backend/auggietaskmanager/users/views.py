@@ -1,8 +1,11 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from django.contrib.auth.models import User
+from django.shortcuts import render
+
 from .models import UserProfile
+
 # Create your views here.
 
 
@@ -13,6 +16,7 @@ class UserSignUpView(APIView):
         firstname = request.data.get("firstname")
         lastname = request.data.get("lastname")
         email = request.data.get("email")
+
         schoolyear = request.data.get("schoolyear")
         major = request.data.get("major", "")
         minor = request.data.get("minor", "")
