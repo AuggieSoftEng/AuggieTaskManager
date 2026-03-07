@@ -17,7 +17,7 @@ class UserSignUpView(APIView):
         lastname = request.data.get("lastname")
         email = request.data.get("email")
 
-        schoolyear = request.data.get("schoolyear")
+        schoolyear = request.data.get("schoolyear", "")
         major = request.data.get("major", "")
         minor = request.data.get("minor", "")
         if not username or not password or not email:
@@ -29,6 +29,6 @@ class UserSignUpView(APIView):
         user = User.objects.create_user(
             username=username, password=password, email=email, first_name=firstname, last_name=lastname
         )
-        UserProfile.objects.create(user=user, school_year=schoolyear, major=major, minor=minor)
+        UserProfile.objects.create(user=user, schoolYear=schoolyear, major=major, minor=minor)
 
         return Response({"message": "User created successfully."}, status=201)

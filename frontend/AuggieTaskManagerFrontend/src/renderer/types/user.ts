@@ -17,11 +17,12 @@ export interface UserProfile {
 }
 
 export interface SignupData {
-  first_name: string;
-  last_name: string;
+  firstname: string;
+  lastname: string;
   username: string;
   email: string;
   password: string;
+  schoolyear?: string;
   major: string;
   minor?: string;
 }

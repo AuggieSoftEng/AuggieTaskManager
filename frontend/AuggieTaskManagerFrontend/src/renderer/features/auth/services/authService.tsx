@@ -5,7 +5,7 @@ import { UserProfile, SignupData } from '../../../types/user';
 
 export class AuthService {
 
-    static async getCurrentUser(): Promise<UserProfile> {
+    static async getUserProfile(): Promise<UserProfile> {
         try {
             const response = await axiosInstance.get(ENDPOINTS.AUTH_ME);
             return response.data;
