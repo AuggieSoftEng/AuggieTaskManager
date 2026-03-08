@@ -25,16 +25,16 @@ export class AuthService {
         }
     }
 
-    static async saveToken(token: string) {
+    static saveToken(token: string): void {
         sessionStorage.setItem(this.TOKEN_KEY, token);
     }
-    static async getToken() {
+    static getToken(): string | null {
         return sessionStorage.getItem(this.TOKEN_KEY);
     }
-    static async removeToken() {
+    static removeToken(): void {
         sessionStorage.removeItem(this.TOKEN_KEY);
     }
-    static async isAuthenticated() {
+    static isAuthenticated(): boolean {
         return this.getToken() !== null;
     }
 

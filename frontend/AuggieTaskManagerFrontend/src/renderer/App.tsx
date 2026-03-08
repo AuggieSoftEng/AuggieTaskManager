@@ -3,23 +3,26 @@
  * Add React Router and store provider here when ready.
  */
 import { SignUpLayout } from './components/layout/SignUpLayout';
-import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import { MemoryRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { AuthService } from './features/auth/services/authService';
+
 export const ProtectedRoute = () => {
-  if (!AuthService.isAuthenticated()) return <Navigate to="/signup" replace />; //change to  "/login" when implemented
+  if (!AuthService.isAuthenticated()) return <Navigate to="/signup" replace />;
   return <Outlet />;
 };
+
 function App() {
   return (
-    <BrowserRouter>
+    <MemoryRouter>
       <Routes>
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<SignUpLayout />} /> {/* Change to DashboardLayout when ready */}
+          <Route path="/" element={<div>Dashboard placeholder</div>} />
         </Route>
         <Route path="/signup" element={<SignUpLayout />} />
-        <Route path="*" element={<SignUpLayout />} />
+        <Route path="/login" element={<div>Login placeholder</div>} />
+        <Route path="*" element={<div>Page not found</div>} />
       </Routes>
-    </BrowserRouter>
+    </MemoryRouter>
   );
 }
 
