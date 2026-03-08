@@ -72,18 +72,24 @@ export const SignUpForm = ({ formData, handleChange, handleSubmit }: SignUpFormP
       </label>
       <label className="fieldset">
         <span className="label">School Year</span>
-        <input
+        <select
           name="schoolyear"
           value={formData.schoolyear ?? ''}
           onChange={handleChange}
-          type="text"
-          className="input input-primary validator"
-          placeholder="School Year"
-        />
+          className="select select-primary validator"
+          required
+        >
+          <option value="">Select year</option>
+          <option value="Freshman">Freshman</option>
+          <option value="Sophomore">Sophomore</option>
+          <option value="Junior">Junior</option>
+          <option value="Senior">Senior</option>
+          <option value="Graduate">Graduate</option>
+        </select>
       </label>
       <label className="fieldset">
         <span className="label">Major</span>
-        <select name="major" value={formData.major} onChange={handleChange} className="select select-primary validator">
+        <select name="major" value={formData.major} onChange={handleChange} className="select select-primary validator" required>
           <option value="">Select a major</option>
           <option value="CS">Computer Science</option>
           <option value="CpE">Computer Engineering</option>
