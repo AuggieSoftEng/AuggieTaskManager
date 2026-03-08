@@ -83,26 +83,38 @@ export const SignUpForm = ({ formData, handleChange, handleSubmit }: SignUpFormP
       </label>
       <label className="fieldset">
         <span className="label">Major</span>
-              <select name="major" value={formData.major} onChange={handleChange} className="select select-primary validator">
-                <option value="">Select a major</option>
-                <option value="1">Computer Science</option>
-                <option value="2">Computer Engineering</option>
-                <option value="3">Electrical Engineering</option>
-                <option value="4">Mechanical Engineering</option>
-                <option value="5">Other</option>
-              </select>
+        <select name="major" value={formData.major} onChange={handleChange} className="select select-primary validator">
+          <option value="">Select a major</option>
+          <option value="CS">Computer Science</option>
+          <option value="CpE">Computer Engineering</option>
+          <option value="EE">Electrical Engineering</option>
+          <option value="ME">Mechanical Engineering</option>
+          <option value="CE">Civil Engineering</option>
+          <option value="BIO">Biology</option>
+          <option value="CHEM">Chemistry</option>
+          <option value="BUS">Business Administration</option>
+          <option value="PSY">Psychology</option>
+          <option value="NURS">Nursing</option>
+          <option value="OTHER">Other</option>
+        </select>
       </label>
       <label className="fieldset">
         <span className="label">Minor</span>
-              <select name="minor" value={formData.minor} onChange={handleChange} className="select select-primary validator">
-                <option value="">Select a minor</option>
-                <option value="1">Computer Science</option>
-                <option value="2">Computer Engineering</option>
-                <option value="3">Electrical Engineering</option>
-                <option value="4">Mechanical Engineering</option>
-                <option value="5">Other</option>
-              </select>
-          </label>
+        <select name="minor" value={formData.minor} onChange={handleChange} className="select select-primary validator">
+          <option value="">Select a minor</option>
+          <option value="CS">Computer Science</option>
+          <option value="CpE">Computer Engineering</option>
+          <option value="EE">Electrical Engineering</option>
+          <option value="ME">Mechanical Engineering</option>
+          <option value="CE">Civil Engineering</option>
+          <option value="BIO">Biology</option>
+          <option value="CHEM">Chemistry</option>
+          <option value="BUS">Business Administration</option>
+          <option value="PSY">Psychology</option>
+          <option value="NURS">Nursing</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </label>
       <button className="btn btn-neutral mt-4 col-span-2" type="submit">
         Sign Up
       </button>
