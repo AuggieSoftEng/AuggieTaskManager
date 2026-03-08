@@ -36,7 +36,6 @@ export const Signup = () => {
         e.preventDefault();
         const result = await signup(formData);
         if (result?.message) {
-            setFormData(initialFormData);
             // Brief delay so the success AlertCard is visible before navigating
             setTimeout(() => navigate('/login'), 2000);
         }
