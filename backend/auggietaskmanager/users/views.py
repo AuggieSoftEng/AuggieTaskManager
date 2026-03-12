@@ -45,10 +45,34 @@ class UserLoginView(APIView):
         if not identifier or not password:
             return Response({"error": "Username/email and password are required."}, status = 400)
         
+        # Finding the user by username or email
         user = User.objects.filter(username = identifier).first()
         if not user:
             user = User.objects.filter(email = identifier).first()
         
         if not user:
             return Response({"error": "Invalid Credentials"}, status = 401)
-    
+        
+        auth_user = authenticate(username = user.username, password = password)
+        if auth_user is None: 
+            return Response({"error": "Invalid Credentials"}, status = 401)
+
+        token, _ = Token.objects.get_or_create(user = auth_user)
+        
+        # User data from the frontend request
+        user_data = {
+            "id": auth_user.id,
+            "username": auth_user.username,
+            "email": auth_user.email,
+            "first_name": auth_user.first_name,
+            "last_name": auth_user.last_name,    
+        }
+        # Response matches frontend AuthResonse shape
+        return Response(
+            {
+                "token": token.key,
+                "user": user_data,
+                "message": "Login successful.",     
+            },
+            status = 200
+        )
