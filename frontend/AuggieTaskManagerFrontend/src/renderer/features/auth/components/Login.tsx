@@ -25,7 +25,7 @@ export const Login = () => {
 
   // Form data state - stores what the user types in the input fields
   const initialFormData: LoginData = {
-    usernameOrEmail: '',
+    identifier: '',
     password: '',
   };
   const [formData, setFormData] = useState<LoginData>(initialFormData);

@@ -28,8 +28,8 @@ export const LoginForm = ({ formData, handleChange, handleSubmit }: LoginFormPro
       <label className="fieldset">
         <span className="label">Username or Email</span>
         <input
-          name="usernameOrEmail" // This matches the property name in LoginData type
-          value={formData.usernameOrEmail} // Controlled input - value comes from parent state
+          name="identifier" // This matches the property name in LoginData type
+          value={formData.identifier} // Controlled input - value comes from parent state
           onChange={handleChange} // Calls parent's handleChange when user types
           type="text"
           className="input input-primary validator" // DaisyUI classes for styling

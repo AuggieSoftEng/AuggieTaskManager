@@ -34,8 +34,8 @@ export class AuthService {
     try {
       const response = await axiosInstance.post(ENDPOINTS.AUTH_LOGIN, {
         // Send both username and email so the backend can accept either
-        username: credentials.usernameOrEmail,
-        email: credentials.usernameOrEmail,
+        username: credentials.identifier,
+        email: credentials.identifier,
         password: credentials.password,
       });
 
