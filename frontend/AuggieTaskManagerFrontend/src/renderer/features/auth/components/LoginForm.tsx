@@ -1,4 +1,5 @@
 import { LoginData } from '../../../types/user';
+import { Link } from 'react-router-dom';
 
 /**
  * Props that LoginForm component receives from its parent (Login.tsx)
@@ -60,10 +61,10 @@ export const LoginForm = ({ formData, handleChange, handleSubmit }: LoginFormPro
       {/* Link to sign up page */}
       <p className="text-center text-sm mt-2">
         Don't have an account?{' '}
-        <a href="/signup" className="text-primary font-semibold hover:underline">
+        <Link to="/signup" className="text-primary font-semibold hover:underline">
           Sign Up
-        </a>
+        </Link>
       </p>
-    </form>
+      </form>
   );
 };

@@ -2,6 +2,7 @@ import { SignUpLayout } from './components/layout/SignUpLayout';
 import { MemoryRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { AuthService } from './features/auth/services/authService';
 import Login from './features/auth/components/Login';
+import LoginLayout from './components/layout/LogInLayout';
 
 export const ProtectedRoute = () => {
   if (!AuthService.isAuthenticated()) return <Navigate to="/login" replace />;
@@ -18,7 +19,7 @@ function App() {
         </Route>
 
         {/* Public routes */}
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginLayout />} />
         <Route path="/signup" element={<SignUpLayout />} />
 
         {/* Default/fallback route */}
