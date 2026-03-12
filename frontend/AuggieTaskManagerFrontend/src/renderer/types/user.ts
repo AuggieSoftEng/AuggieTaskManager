@@ -8,3 +8,23 @@ export interface User {
   first_name: string;
   last_name: string;
 }
+
+export interface UserProfile {
+  user: User;
+  major: string;
+  minor: string | null;
+  bio: string | null;
+}
+
+export interface SignupData {
+  firstname: string;
+  lastname: string;
+  username: string;
+  email: string;
+  password: string;
+  schoolyear?: string;
+  major: string;
+  minor?: string;
+}
+
+
