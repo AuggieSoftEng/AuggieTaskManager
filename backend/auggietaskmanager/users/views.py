@@ -5,7 +5,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
-from django.shortcuts import render
+#from django.shortcuts import render
 from .models import UserProfile
 
 # Create your views here.
@@ -34,3 +34,21 @@ class UserSignUpView(APIView):
         UserProfile.objects.create(user=user, schoolYear=schoolyear, major=major, minor=minor)
 
         return Response({"message": "User created successfully."}, status=201)
+
+class UserLoginView(APIView):
+    def post (self, request):
+        # Grabing the username and password from the frontend request
+        identifier = request.data.get("username") or request.data.get("email") or request.data.get("identifier")
+        password = request.data.get("password")
+        
+        # Checking to see if credentials were valid
+        if not identifier or not password:
+            return Response({"error": "Username/email and password are required."}, status = 400)
+        
+        user = User.objects.filter(username = identifier).first()
+        if not user:
+            user = User.objects.filter(email = identifier).first()
+        
+        if not user:
+            return Response({"error": "Invalid Credentials"}, status = 401)
+    

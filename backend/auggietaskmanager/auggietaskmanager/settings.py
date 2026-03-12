@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'moodle',
     'users',
 ]
