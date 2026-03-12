@@ -27,4 +27,12 @@ export interface SignupData {
   minor?: string;
 }
 
+/**
+ * Data sent from the login form.
+ * Either email or username can be used to log in.
+ */
+export interface LoginData {
+  identifier: string; // can be email or username
+  password: string;
+}
 
