@@ -37,7 +37,7 @@ export const Login = () => {
   // If they have a token, skip login and go straight to dashboard
   useEffect(() => {
     if (AuthService.getToken()) {
-      navigate('/dashboard');
+      navigate('/'); //go to the the protected route
     }
   }, [navigate]);
 
@@ -45,7 +45,7 @@ export const Login = () => {
   // This gives user time to see the success message before navigating
   useEffect(() => {
     if (message) {
-      const timer = setTimeout(() => navigate('/dashboard'), 2000);
+      const timer = setTimeout(() => navigate('/'), 2000);
       return () => clearTimeout(timer); // Clean up timer if component unmounts
     }
   }, [message, navigate]);
