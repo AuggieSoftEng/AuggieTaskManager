@@ -9,18 +9,21 @@ interface SideBarProps {
 }
 
 export const SideBar = ({ sideBarItems, activeItem, setActiveItem, handleLogout }: SideBarProps) => {
+  // Handle the click event for the sidebar items
   const handleItemClick = (item: string) => {
     if (item === 'Logout') {
       handleLogout();
       return;
     }
-    setActiveItem(item);
+    setActiveItem(item); // Set the active item to the item that was clicked
   };
-  const isActive = (item: string) => activeItem === item;
+  const isActive = (item: string) => activeItem === item; // Check if the item is active
+
   const getIconColor = (item: string) =>
-    isActive(item) ? 'text-white' : 'text-gray-500';
+    isActive(item) ? 'text-white' : 'text-gray-500'; // Get the color of the icon based on if the item is active
   const getTextColor = (item: string) =>
-    isActive(item) ? 'text-white' : 'text-gray-500';
+    isActive(item) ? 'text-white' : 'text-gray-500'; // Get the color of the text based on if the item is active
+
   return (
     <ul className="menu w-full grow">
       {/* List item */}

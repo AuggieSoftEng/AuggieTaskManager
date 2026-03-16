@@ -1,9 +1,9 @@
 import { SquareChevronLeft, SquareChevronRight } from 'lucide-react';
 import { useState } from 'react';
 export const NavBar = ({ title }: { title: string }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // The state to open or close the sidebar
   const handleToggle = () => {
-    setIsOpen(!isOpen);
+    setIsOpen(!isOpen); // Toggle the sidebar to open or close
   };
   const Icon = isOpen ? SquareChevronLeft : SquareChevronRight;
   return (

@@ -14,6 +14,7 @@ import {
   LogOut,
 } from 'lucide-react';
 export const DashboardLayout = () => {
+  // Sidebar items to be used in the SideBar component
   const sideBarItems = [
     { name: 'Homepage', icon: Menu },
     { name: 'Settings', icon: Settings },
@@ -25,18 +26,20 @@ export const DashboardLayout = () => {
   ];
 
   const navigate = useNavigate();
-  const [activeItem, setActiveItem] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [activeItem, setActiveItem] = useState<string | null>(null); // The active item in the sidebar
+  const [message, setMessage] = useState<string | null>(null); // The message to be displayed in the AlertCard
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // The error message to be displayed in the AlertCard
 
   const { logOut, error } = useAuth();
+
+  // Handle the logout action
   const handleLogout = async () => {
     const result = await logOut();
     if (result?.message) {
       setMessage(result.message);
-      setTimeout(() => navigate('/login'), 2000);
+      setTimeout(() => navigate('/login'), 1000); // Navigate to the login page after 1 second
     } else {
-      setErrorMessage(error ?? 'Logout failed');
+      setErrorMessage(error ?? 'Logout failed'); // Set the error message to the error
     }
   };
 
