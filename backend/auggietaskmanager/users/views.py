@@ -83,5 +83,5 @@ class UserLogoutView(APIView):
 
     def post(self, request):
         Token.objects.filter(user=request.user).delete()
-        return Response({"message": "Logged out."}, status=200)
+        return Response({"message": "Logout successful."}, status=200)
 

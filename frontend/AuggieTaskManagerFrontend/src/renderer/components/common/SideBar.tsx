@@ -1,21 +1,19 @@
-import { useState } from 'react';
+import type { LucideIcon } from 'lucide-react';
+export type SideBarItem = { name: string; icon: LucideIcon };
+import { useEffect } from 'react';
+interface SideBarProps {
+  sideBarItems: SideBarItem[];
+  activeItem: string | null;
+  setActiveItem: (item: string) => void;
+  handleLogout: () => Promise<void>;
+}
 
-import {
-  Menu,
-  Settings,
-  LogOut,
-  File,
-  List,
-  Calendar,
-  ListIcon,
-  CalendarIcon,
-  UngroupIcon,
-  CircleUserRound,
-  UsersRound,
-} from 'lucide-react';
-
-export const SideBar = ({ activeItem, setActiveItem }: { activeItem: string | null, setActiveItem: (item: string) => void }) => {
+export const SideBar = ({ sideBarItems, activeItem, setActiveItem, handleLogout }: SideBarProps) => {
   const handleItemClick = (item: string) => {
+    if (item === 'Logout') {
+      handleLogout();
+      return;
+    }
     setActiveItem(item);
   };
   const isActive = (item: string) => activeItem === item;
@@ -23,15 +21,6 @@ export const SideBar = ({ activeItem, setActiveItem }: { activeItem: string | nu
     isActive(item) ? 'text-white' : 'text-gray-500';
   const getTextColor = (item: string) =>
     isActive(item) ? 'text-white' : 'text-gray-500';
-  const sideBarItems = [
-    { name: 'Homepage', icon: Menu },
-    { name: 'Settings', icon: Settings },
-    { name: 'Profile', icon: CircleUserRound },
-    { name: 'Task List', icon: ListIcon },
-    { name: 'Task Calendar', icon: CalendarIcon },
-    { name: 'Study Groups', icon: UsersRound },
-    { name: 'Logout', icon: LogOut },
-  ];
   return (
     <ul className="menu w-full grow">
       {/* List item */}
