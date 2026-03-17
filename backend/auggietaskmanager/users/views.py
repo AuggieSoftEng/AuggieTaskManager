@@ -85,3 +85,43 @@ class UserLogoutView(APIView):
         Token.objects.filter(user=request.user).delete()
         return Response({"message": "Logout successful."}, status=200)
 
+class UserProfileView(APIView):
+    # Only authenticated users can access this view, uses default authentication class (TokenAuthentication)
+    permission_classes = [IsAuthenticated] 
+    
+    def get(self, request): # Gets the user's profile data
+        user = request.user
+        user_profile = UserProfile.objects.get(user=user)
+        return Response({
+            "user": user,
+            "schoolYear": user_profile.schoolYear,
+            "major": user_profile.major,
+            "minor": user_profile.minor,
+            "bio": user_profile.bio,
+            "created_at": user_profile.created_at,
+        }, status=200)
+        
+    def patch(self, request): # Updates the user's profile data
+        user = request.user
+        user_profile = UserProfile.objects.get(user=user)
+        user_profile.schoolYear = request.data.get("schoolYear", user_profile.schoolYear)
+        user_profile.major = request.data.get("major", user_profile.major)
+        user_profile.minor = request.data.get("minor", user_profile.minor)
+        user_profile.bio = request.data.get("bio", user_profile.bio)
+        user_profile.save()
+        return Response({
+            "user": user,
+            "schoolYear": user_profile.schoolYear,
+            "major": user_profile.major,
+            "minor": user_profile.minor,
+            "bio": user_profile.bio,
+            "created_at": user_profile.created_at,
+            "message": "Profile updated successfully.",
+        }, status=200)
+    
+    def delete(self, request): # Deletes the user from the database and all associated data
+        user = request.user
+        user.delete()
+        return Response({
+            "message": "User deleted successfully.",
+        }, status=200)
