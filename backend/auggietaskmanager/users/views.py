@@ -86,8 +86,8 @@ class UserLogoutView(APIView):
         return Response({"message": "Logout successful."}, status=200)
 
 class UserProfileView(APIView):
-    
-    permission_classes = [IsAuthenticated] # Only authenticated users can access this view, uses default authentication class
+    # Only authenticated users can access this view, uses default authentication class (TokenAuthentication)
+    permission_classes = [IsAuthenticated] 
     
     def get(self, request): # Gets the user's profile data
         user = request.user
@@ -98,6 +98,7 @@ class UserProfileView(APIView):
             "major": user_profile.major,
             "minor": user_profile.minor,
             "bio": user_profile.bio,
+            "created_at": user_profile.created_at,
         }, status=200)
         
     def patch(self, request): # Updates the user's profile data
@@ -114,6 +115,7 @@ class UserProfileView(APIView):
             "major": user_profile.major,
             "minor": user_profile.minor,
             "bio": user_profile.bio,
+            "created_at": user_profile.created_at,
             "message": "Profile updated successfully.",
         }, status=200)
     
