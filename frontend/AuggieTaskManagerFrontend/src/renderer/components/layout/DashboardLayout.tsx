@@ -4,6 +4,7 @@ import { SideBar } from '../common/SideBar';
 import { useAuth } from '../../features/auth/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { AlertCard, AlertCardProps } from '../common/AlertCard';
+
 import {
   Menu,
   Settings,
@@ -13,6 +14,7 @@ import {
   UsersRound,
   LogOut,
 } from 'lucide-react';
+import { Profile } from '../../features/profile/components/Profile';
 export const DashboardLayout = () => {
   // Sidebar items to be used in the SideBar component
   const sideBarItems = [
@@ -26,7 +28,7 @@ export const DashboardLayout = () => {
   ];
 
   const navigate = useNavigate();
-  const [activeItem, setActiveItem] = useState<string | null>(null); // The active item in the sidebar
+  const [activeItem, setActiveItem] = useState<string>('Homepage'); // The active item in the sidebar
   const [message, setMessage] = useState<string | null>(null); // The message to be displayed in the AlertCard
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // The error message to be displayed in the AlertCard
 
@@ -43,6 +45,25 @@ export const DashboardLayout = () => {
     }
   };
 
+  const renderContent = () => {
+    switch (activeItem) {
+      case 'Profile':
+        return <Profile />;
+      case 'Homepage':
+        return <div className = "p-4">Homepage content</div>
+      case 'Settings':
+        return <div className = "p-4">Settings content</div>
+      case 'Task List':
+        return <div className = "p-4">Task List content</div>
+      case 'Task Calendar':
+        return <div className = "p-4">Task Calendar content</div>
+      case 'Study Groups':
+        return <div className = "p-4">Study Groups content</div>
+      default:
+        return <div className = "p-4">Page Content</div>;
+    }
+  }
+
   return (
     <>
       {message && <AlertCard type="success" message={message} />}
@@ -53,7 +74,7 @@ export const DashboardLayout = () => {
           {/* Navbar */}
           <NavBar title="Dashboard" />
           {/* Page content here */}
-          <div className="p-4">Page Content</div>
+          {renderContent()}
         </div>
 
         <div className="drawer-side is-drawer-close:overflow-visible">
