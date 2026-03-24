@@ -9,8 +9,8 @@ import { AlertCard } from "../../../components/common/AlertCard";
 export const Tasks = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const moodleUrl = AuthService.getCurrentUser()?.moodle_url;
-    const navigate = useNavigate();
+    // const moodleUrl = AuthService.getCurrentUser()?.moodle_url;
+    // const navigate = useNavigate();
     useEffect(() => {
         const fetchTasks = async () => {
             try {

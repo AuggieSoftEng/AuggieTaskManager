@@ -13,6 +13,7 @@ import {
   UsersRound,
   LogOut,
 } from 'lucide-react';
+import { Tasks } from '../../features/tasks/components/Tasks';
 export const DashboardLayout = () => {
   // Sidebar items to be used in the SideBar component
   const sideBarItems = [
@@ -53,7 +54,7 @@ export const DashboardLayout = () => {
           {/* Navbar */}
           <NavBar title="Dashboard" />
           {/* Page content here */}
-          <div className="p-4">Page Content</div>
+          <div className="p-4"><Tasks /></div>
         </div>
 
         <div className="drawer-side is-drawer-close:overflow-visible">
