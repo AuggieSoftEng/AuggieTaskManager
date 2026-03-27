@@ -3,7 +3,7 @@ import { ProfileService } from '../services/profileService';
 import { UserProfile } from '../../../types/user';
 import { AlertCard } from '../../../components/common/AlertCard';
 import { useNavigate } from 'react-router-dom';
-//import { AuthService } from '../../'
+import { AuthService } from '../../auth/services/authService';
 
 /**
  * User Profile Page which shows the currently logged in user's profile data
@@ -16,7 +16,7 @@ export const Profile: React.FC = () => {
 
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
-
+    const [deleting, setDeleting] = useState<boolean>(false);
     // Success message when profile is updated successfully
     const [successMessage, setSuccessMessage] = useState<string | null > (null);
 
@@ -24,6 +24,9 @@ export const Profile: React.FC = () => {
     const [majorInput, setMajorInput ] = useState<string>('');
     const [minorInput, setMinorInput ] = useState<string>('');
     const [bioInput, setBioInput ] = useState<string>('');
+
+    const navigate = useNavigate();
+    
 
     useEffect(() =>{
         const loadProfile = async () => {
@@ -58,14 +61,14 @@ export const Profile: React.FC = () => {
         if (profile.bio == null) setBioInput('');
         else setBioInput(profile.bio);
     };
-
+    // Cancels the editing mode and resets the form fields
     const cancelEditing = () => {
         setIsEditing(false);
         setSaving(false);
         setError(null);
         setSuccessMessage(null);
     };
-
+    // Saving profile changes to the backend
     const handleSave = async () => {
         if (!profile) return;
 
@@ -102,6 +105,30 @@ export const Profile: React.FC = () => {
             setSaving(false);
         }
     };
+    const handleDelete = async () => {
+        const confirmed = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
+        if (!confirmed)
+            return;
+        try {
+            setDeleting(true);
+            setError(null);
+            setSuccessMessage(null);
+
+            await ProfileService.deleteProfile();
+               
+            // Clearing local session
+            AuthService.removeToken();
+            AuthService.removeUser();
+
+            // redirect to login page
+            navigate('/login');
+        } catch (error: any) {
+            setError(error instanceof Error ? error.message : 'Failed to delete account');
+        } finally {
+            setDeleting(false);
+        }
+    };
+
     if (loading) {
         return <div className = "p-4">Loading profile...</div>;
     } 
@@ -112,7 +139,7 @@ export const Profile: React.FC = () => {
             </div>
         );
     }
-
+    // Fallback if no profile data is found
     if (!profile) {
         return <div className = "p-4"> No profile data found.</div>;
     }
@@ -177,6 +204,9 @@ export const Profile: React.FC = () => {
                             <button className = "btn btn-ghost" onClick = {cancelEditing} disabled = {saving}>
                                 Cancel
                             </button>
+                            <button className = "btn btn-error" onClick = {handleDelete} disabled = {deleting || saving}>
+                                {deleting ? 'Deleting...' : 'Delete Account'}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -206,6 +236,7 @@ export const Profile: React.FC = () => {
                         <div>Bio: {bio || 'N/A'}</div>
                     </div>
                     <button className = "btn btn-primary" onClick = {startEditing}>Edit Profile</button>
+                    <button className="btn btn-error ml-auto" onClick={handleDelete} disabled={deleting || saving}>{deleting ? 'Deleting...' : saving ? 'Saving...' : 'Delete Account'}</button>
                 </div>
             </div>
         </div>
