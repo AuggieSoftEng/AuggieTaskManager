@@ -52,7 +52,7 @@ export const DashboardLayout = () => {
       case 'Settings':
         return <div className = "p-4">Settings content</div>
       case 'Task List':
-        return <div className = "p-4">Task List content</div>
+        return <div className = "p-4"><Tasks /></div>
       case 'Task Calendar':
         return <div className = "p-4">Task Calendar content</div>
       case 'Study Groups':
