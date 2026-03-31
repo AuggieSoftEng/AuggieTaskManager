@@ -159,16 +159,25 @@ export const Profile: React.FC = () => {
                             {profile?.user.first_name} {profile?.user.last_name}
                         </div>
 
-                        <label className = "fieldset">
-                            <span className = "label">School Year</span>
-                            <input
-                                className = "input input-primary validator w-full"
-                                value = {schoolYearInput}
-                                onChange = {(e) => setSchoolYearInput(e.target.value)}
-                            />
+                        <label className="fieldset">
+                            <span className="label">School Year</span>
+                            <select
+                                value={schoolYearInput}
+                                onChange={(e) => setSchoolYearInput(e.target.value)}
+                                className="select select-primary validator"
+                                required
+                            >
+                                <option value="">Select year</option>
+                                <option value="Freshman">Freshman</option>
+                                <option value="Sophomore">Sophomore</option>
+                                <option value="Junior">Junior</option>
+                                <option value="Senior">Senior</option>
+                                <option value="Graduate">Graduate</option>
+                            </select>
                         </label>
 
                         <label className="fieldset">
+
                             <span className="label">Major</span>
                             <select
                                 value={majorInput}
