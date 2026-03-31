@@ -11,4 +11,6 @@ export const ENDPOINTS = {
   PROFILE_ME: '/users/profile/',
   // builds the url by passing in the user id
   PROFILE_DETAIL: (userId: number) => `/users/profile/${userId}/`,
+
+  TASKS_UPCOMING: '/tasks/upcoming/',
 } as const;

@@ -1,5 +1,7 @@
-from .models import *
+from moodle.models import Task
 from django.contrib import admin
+
+
 # Register your models here.
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
@@ -13,4 +15,3 @@ class TaskAdmin(admin.ModelAdmin):
     list_max_show_all = 10
     list_select_related = True
     list_prefetch_related = True
-    list_select_related = True

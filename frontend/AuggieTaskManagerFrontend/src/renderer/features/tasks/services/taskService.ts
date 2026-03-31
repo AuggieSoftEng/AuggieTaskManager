@@ -19,6 +19,11 @@ export class TaskService {
     return response.data.tasks;
   }
 
+  static async getUpcomingTasks(params?: { limit?: number; days?: number }): Promise<UpcomingTask[]> {
+    const resp = await axiosInstance.get<ApiTask[]>(ENDPOINTS.TASKS_UPCOMING, { params });
+    return resp.data.map(toUpcomingTask).filter((x): x is UpcomingTask => x !== null);
+  }
+
   static async createTask(task: Task): Promise<Task> {
     const response = await axiosInstance.post(ENDPOINTS.TASKS, task);
     return response.data;
@@ -39,4 +44,31 @@ export class TaskService {
   static async deleteTask(taskId: number): Promise<void> {
     await axiosInstance.delete(`${ENDPOINTS.TASKS}${taskId}/`);
   }
+}
+
+export type ApiTask = {
+  id: number | string;
+  title: string;
+  description?: string;
+  due_date: string | null;
+  course: string;
+  source: 'manual' | 'moodle';
+  completed: boolean;
+};
+
+export type UpcomingTask = {
+  id: string;
+  title: string;
+  dueAt: string;
+  course?: string;
+};
+
+function toUpcomingTask(t: ApiTask): UpcomingTask | null {
+  if (!t.due_date) return null;
+  return {
+    id: String(t.id),
+    title: t.title,
+    dueAt: t.due_date,
+    course: t.course || undefined,
+  };
 }
