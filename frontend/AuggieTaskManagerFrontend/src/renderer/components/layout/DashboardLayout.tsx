@@ -44,24 +44,6 @@ export const DashboardLayout = () => {
       setErrorMessage(error ?? 'Logout failed'); // Set the error message to the error
     }
   };
-  const renderContent = () => {
-    switch (activeItem) {
-      case 'Profile':
-        return <div className = "p-4">Profile content</div>;
-      case 'Homepage':
-        return <div className = "p-4">Homepage content</div>
-      case 'Settings':
-        return <div className = "p-4">Settings content</div>
-      case 'Task List':
-        return <div className = "p-4">Task List content</div>
-      case 'Task Calendar':
-        return <div className = "p-4">Task Calendar content</div>
-      case 'Study Groups':
-        return <div className = "p-4">Study Groups content</div>
-      default:
-        return <div className = "p-4">Page Content</div>;
-    }
-  }
 
   const renderContent = () => {
     switch (activeItem) {
