@@ -1,5 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, action
 from rest_framework.permissions import IsAuthenticated
@@ -15,6 +16,8 @@ from moodle.utils import add_moodle_tasks, extract_calendar_data
 def api_root(request):
     # Moodle app API root. Add endpoints here as you build them.
     return Response({"moodle": "ok"})
+
+
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
@@ -23,7 +26,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         return Task.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user, source = 'manual')
+        serializer.save(user=self.request.user, source='manual')
 
     @action(detail=False, methods=['get'], url_path='calendar')
     def calendar_view(self, request):
@@ -102,12 +105,52 @@ class TaskViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+    @action(detail=False, methods=['get'], url_path='upcoming')
+    def upcoming(self, request):
+        """Return upcoming (incomplete) tasks due within the next N days.
+
+        Query params:
+          - limit: max number of tasks to return (default 3)
+          - days: lookahead window in days (default 7)
+        """
+        try:
+            limit = int(request.query_params.get('limit', 3))
+        except (TypeError, ValueError):
+            return Response({'error': 'limit must be an integer'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            days = int(request.query_params.get('days', 7))
+        except (TypeError, ValueError):
+            return Response({'error': 'days must be an integer'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Basic guardrails
+        limit = max(0, min(limit, 50))
+        days = max(0, min(days, 365))
+
+        now = timezone.now()
+        end = now + timedelta(days=days)
+
+        queryset = (
+            self.get_queryset()
+            .filter(completed=False)
+            .exclude(due_date__isnull=True)
+            .filter(due_date__range=[now, end])
+            .order_by('due_date')
+        )
+
+        if limit:
+            queryset = queryset[:limit]
+        else:
+            queryset = queryset[:0]
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     @action(detail=False, methods=['get'], url_path='filter')
     def filter_tasks(self, request):
         """Filter tasks based on query parameters."""
         queryset = self.get_queryset()
-        status_param = request.query_params.get('status')
-        priority_param = request.query_params.get('priority')
+        completed_param = request.query_params.get('completed')
         source_param = request.query_params.get('source')
 
         # Validate source parameter
@@ -118,13 +161,20 @@ class TaskViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Apply filters based on query parameters
-        if status_param:
-            queryset = queryset.filter(status=status_param)
-        if priority_param:
-            queryset = queryset.filter(priority=priority_param)
+        # Apply filters based on query parameters (only for fields that exist on Task)
+        if completed_param is not None:
+            if completed_param.lower() in ['true', '1', 'yes']:
+                queryset = queryset.filter(completed=True)
+            elif completed_param.lower() in ['false', '0', 'no']:
+                queryset = queryset.filter(completed=False)
+            else:
+                return Response(
+                    {'error': 'Invalid completed value. Use true/false.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         if source_param:
             queryset = queryset.filter(source=source_param)
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+

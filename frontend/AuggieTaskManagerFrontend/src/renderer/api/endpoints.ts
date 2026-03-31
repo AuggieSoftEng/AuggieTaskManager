@@ -9,4 +9,7 @@ export const ENDPOINTS = {
   PROFILE_ME: '/users/profile/',
   // builds the url by passing in the user id
   PROFILE_DETAIL: (userId: number) => `/users/profile/${userId}/`,
+
+  TASKS: '/moodle/tasks/',
+  TASKS_UPCOMING: '/moodle/tasks/upcoming/',
 } as const;
