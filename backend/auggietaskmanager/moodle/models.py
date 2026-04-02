@@ -30,6 +30,24 @@ class Task(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
+    # This model represents a course in Moodle that can be associated with tasks and study groups.
+    class Courses(models.Model):
+     
+        # The unique identifier for the course, represented as a string (e.g., "CSC101"). This field serves as the primary key for the model.
+        courseID = models.CharField(max_length=10, primary_key=True)
+
+        # Name of the course, such as "Introduction to Computer Science". This field is required and has a maximum length of 200 characters.
+        name = models.CharField(max_length=200)
+
+        # A brief description of the course, which can be left blank. This field is optional and can contain a longer text description of the course content or objectives.
+        description = models.TextField(blank=True)
+
+        # The name of the professor teaching the course, which can also be left blank. This field is optional and has a maximum length of 100 characters.
+        professor = models.CharField(max_length=100, blank=True)
+
+
+
     class Meta:
         ordering = ['due_date']
 
