@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     minor = models.CharField(max_length=50, blank=True)
 
     # A brief bio or description about the user
-    bio = models.TextField(max_length = 250, blank=True)
+    bio = models.TextField(max_length = 250, blank=True, null=True)
 
     # Moodle calendar iCal URL (used for importing tasks)
     moodle_url = models.URLField(blank=True, default="")
