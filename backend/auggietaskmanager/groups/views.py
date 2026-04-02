@@ -42,6 +42,72 @@ class StudyGroupListCreateView(APIView):
             return Response(serializer.errors)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_groups(request):
+    """
+    GET: Returns all study groups in the system, public or private
+    """
+    groups = StudyGroup.objects.all()
+    serializer = StudyGroupSerializer(groups, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_description(request, groupID):
+    """
+    PATCH: Updates the description of a study group. Only the creator of the group can update the description.
+    """
+    try:
+        group = StudyGroup.objects.get(id=groupID)
+    except StudyGroup.DoesNotExist:
+        return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+    if group.created_by != request.user:
+        return Response({"error": "Only the creator of the group can update the description."}, status=status.HTTP_403_FORBIDDEN)
+    
+    group.description = request.data.get("description", group.description)
+    group.save()
+    return Response({"message": "Description updated successfully."}, status=status.HTTP_200_OK)
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_group_name(request, groupID):
+    """
+    PATCH: Updates the name of a study group. Only the creator of the group can update the name.
+    """
+
+    try:
+        group = StudyGroup.objects.get(id=groupID)
+    except:
+        return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if group.created_by != request.user:
+        return Response({"error": "Only the creator of the group can update the group name."}, status=status.HTTP_403_FORBIDDEN)
+
+    group.name = request.data.get("name",group.name)
+    group.save()
+    return Response({"message": "Group name updated successfully."}, status = status.HTTP_200_OK)
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_members(request, groupID):
+    """
+    PATCH: updates the members of a study group. Only the creator of the group can update the members.
+    """
+
+    try:
+        group = StudyGroup.objects.get(id=groupID)
+    except:
+        return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+    if group.created_by != request.user:
+        return Response({"error" : "Only the creator of the group can update the group members."}, status = status.HTTP_403_FORBIDDEN)
+
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
