@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from moodle.models import Courses
 
-# Create your models here.
 class StudyGroup(models.Model):
     groupID = models.AutoField(primary_key=True)
     
@@ -16,7 +14,7 @@ class StudyGroup(models.Model):
 
     members = models.ManyToManyField(User, related_name='study_groups')
 
-    related_courses = models.ManyToManyField(Courses, related_name='study_groups')
+    related_courses = models.ManyToManyField('moodle.Courses', related_name='study_groups')
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_groups')
 
