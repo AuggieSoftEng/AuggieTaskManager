@@ -1,37 +1,22 @@
+import { useEffect } from 'react';
 import { TaskList } from './TaskList';
-import { Task } from '../../../types/task';
-import { useState, useEffect } from 'react';
-import { TaskService } from '../services/taskService';
-import { AuthService } from '../../auth/services/authService';
 import { AlertCard } from '../../../components/common/AlertCard';
+import { useTasks } from '../hooks/useTasks';
 
 export const Tasks = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [moodleUrl, setMoodleUrl] = useState<string | null>(
-    AuthService.getCurrentUser()?.moodle_url
-  );
-  const [hasMoodleUrl, setHasMoodleUrl] = useState<boolean>(false);
-
-  const handleImportMoodleTasks = async () => {
-    if (moodleUrl) {
-      const result = await TaskService.loadMoodleCalendarUrl(moodleUrl);
-      setTasks((tasks) => [...tasks, ...result]);
-      setHasMoodleUrl(true);
-    }
-  };
+  const {
+    tasks,
+    errorMessage,
+    moodleUrl,
+    setMoodleUrl,
+    hasMoodleUrl,
+    handleImportMoodleTasks,
+    fetchTasks,
+  } = useTasks();
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const tasks = await TaskService.getTasks();
-        setTasks(tasks);
-      } catch (error) {
-        setErrorMessage('Error fetching tasks');
-      }
-    };
-    fetchTasks();
-  }, []);
+    void fetchTasks();
+  }, [fetchTasks]);
 
   return (
     <div>

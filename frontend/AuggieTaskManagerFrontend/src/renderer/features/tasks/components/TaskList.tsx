@@ -1,6 +1,5 @@
 import { TaskCard } from './TaskCard';
 import { Task } from '../../../types/task';
-import { Plus } from 'lucide-react';
 
 export interface TaskListProps {
   tasks: Task[];

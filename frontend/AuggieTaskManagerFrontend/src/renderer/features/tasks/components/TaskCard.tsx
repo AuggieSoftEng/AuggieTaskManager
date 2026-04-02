@@ -4,9 +4,11 @@ import { TrashIcon, CheckIcon } from 'lucide-react';
 
 export interface TaskCardProps {
   task: Task;
+  onComplete?: () => void;
+  onDelete?: () => void;
 }
 
-export const TaskCard = ({ task }: TaskCardProps) => {
+export const TaskCard = ({ task, onComplete, onDelete }: TaskCardProps) => {
   return (
     <div className="card card-border bg-base-200 w-full">
       <div className="card-body w-full">
@@ -21,8 +23,8 @@ export const TaskCard = ({ task }: TaskCardProps) => {
         <p>Completed: {task.completed ? 'Yes' : 'No'}</p>
         {task.source && <p>Source: {task.source}</p>}
         <div className="card-actions justify-end">
-          <CheckIcon className="btn btn-primary">Complete</CheckIcon>
-          <TrashIcon className="btn btn-error">Delete</TrashIcon>
+          <CheckIcon className="btn btn-primary" onClick={onComplete}>Complete</CheckIcon>
+          <TrashIcon className="btn btn-error" onClick={onDelete}>Delete</TrashIcon>
         </div>
       </div>
     </div>
