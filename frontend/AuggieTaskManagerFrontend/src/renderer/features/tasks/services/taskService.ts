@@ -2,7 +2,7 @@
  * taskService: API calls for tasks (CRUD).
  * Use axiosInstance and ENDPOINTS from renderer/api.
  */
-import { Task } from '../../../types/task';
+import { Task, TaskForm } from '../../../types/task';
 import { axiosInstance } from '../../../api/axiosInstance';
 import { ENDPOINTS } from '../../../api/endpoints';
 
@@ -19,13 +19,26 @@ export class TaskService {
     return response.data.tasks;
   }
 
-  static async getUpcomingTasks(params?: { limit?: number; days?: number }): Promise<UpcomingTask[]> {
-    const resp = await axiosInstance.get<ApiTask[]>(ENDPOINTS.TASKS_UPCOMING, { params });
-    return resp.data.map(toUpcomingTask).filter((x): x is UpcomingTask => x !== null);
+  static async getUpcomingTasks(params?: {
+    limit?: number;
+    days?: number;
+  }): Promise<UpcomingTask[]> {
+    const resp = await axiosInstance.get<ApiTask[]>(ENDPOINTS.TASKS_UPCOMING, {
+      params,
+    });
+    return resp.data
+      .map(toUpcomingTask)
+      .filter((x): x is UpcomingTask => x !== null);
   }
 
-  static async createTask(task: Task): Promise<Task> {
-    const response = await axiosInstance.post(ENDPOINTS.TASKS, task);
+  static async createTask(form: TaskForm): Promise<Task> {
+    const response = await axiosInstance.post(ENDPOINTS.TASKS, {
+      title: form.title,
+      description: form.description,
+      course: form.course,
+      due_date: form.due_date.trim() === '' ? null : form.due_date,
+      completed: false,
+    });
     return response.data;
   }
 

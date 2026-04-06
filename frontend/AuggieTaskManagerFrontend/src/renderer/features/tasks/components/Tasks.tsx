@@ -15,6 +15,7 @@ export const Tasks = () => {
     updateTask,
     deleteTask,
     completeTask,
+    createTask,
   } = useTasks();
 
   useEffect(() => {
@@ -50,7 +51,7 @@ export const Tasks = () => {
           </fieldset>
         </div>
       )}
-      <TaskList tasks={tasks} completeTask={completeTask} deleteTask={deleteTask} />
+      <TaskList tasks={tasks} completeTask={completeTask} deleteTask={deleteTask} createTask={createTask} />
     </div>
   );
 };

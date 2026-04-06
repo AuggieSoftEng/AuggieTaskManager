@@ -16,4 +16,11 @@ export interface Task {
   created_at: string;
 }
 
+export type TaskForm = {
+  title: string;
+  description: string;
+  course: string;
+  due_date: string;
+};
+
 

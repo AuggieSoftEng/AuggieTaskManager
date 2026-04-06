@@ -2,7 +2,7 @@
  * Task list state: load from the API, import from Moodle, update, and delete.
  */
 import { useState, useCallback } from 'react';
-import { Task } from '../../../types/task';
+import { Task, TaskForm } from '../../../types/task';
 import { TaskService } from '../services/taskService';
 import { AuthService } from '../../auth/services/authService';
 
@@ -55,9 +55,14 @@ export function useTasks() {
   /** Completes a task on the server and updates the local state. */
   const completeTask = useCallback(async (task: Task) => {
     try {
-      const completed = await TaskService.updateTask({ ...task, completed: true });
+      const completed = await TaskService.updateTask({
+        ...task,
+        completed: true,
+      });
       setTasks((tasks: Task[]) =>
-        tasks.map((currentTask: Task) => currentTask.id === task.id ? completed : currentTask)
+        tasks.map((currentTask: Task) =>
+          currentTask.id === task.id ? completed : currentTask
+        )
       );
     } catch {
       setErrorMessage('Error completing task');
@@ -74,13 +79,15 @@ export function useTasks() {
     }
   }, []);
 
-  /** Creates a new task on the server and adds it to local state. */
-  const createTask = useCallback(async (task: Task) => {
+  /** Creates a new task on the server and adds it to local state. Returns whether the request succeeded. */
+  const createTask = useCallback(async (values: TaskForm): Promise<boolean> => {
     try {
-      const created = await TaskService.createTask(task);
+      const created = await TaskService.createTask(values);
       setTasks((prev) => [...prev, created]);
+      return true;
     } catch {
       setErrorMessage('Error creating task');
+      return false;
     }
   }, []);
 
