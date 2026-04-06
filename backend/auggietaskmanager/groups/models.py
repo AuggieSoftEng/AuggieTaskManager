@@ -14,7 +14,7 @@ class StudyGroup(models.Model):
 
     members = models.ManyToManyField(User, related_name='study_groups')
 
-    related_courses = models.ManyToManyField('moodle.Courses', related_name='study_groups')
+    related_course = models.ManyToManyField('moodle.Course', related_name='study_groups')
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_groups')
 

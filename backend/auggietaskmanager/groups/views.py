@@ -1,9 +1,12 @@
+from tokenize import group
+
 from rest_framework.decorators import APIView, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from .models import StudyGroup
 from .serializers import StudyGroupSerializer
+from django.contrib.auth.models import User
 
 
 class StudyGroupListCreateView(APIView):
@@ -103,16 +106,24 @@ def update_members(request, groupID):
         group = StudyGroup.objects.get(id=groupID)
     except StudyGroup.DoesNotExist:
         return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
-    
+
     if group.created_by != request.user:
-        return Response({"error" : "Only the creator of the group can update the group members."}, status = status.HTTP_403_FORBIDDEN)
+        return Response(
+            {"error": "Only the creator of the group can update the group members."},
+            status=status.HTTP_403_FORBIDDEN
+        )
 
     member_ids = request.data.get("members")
-    if member_ids is not None:
-        group.members.set(member_ids)
-        group.save()
+    if not isinstance(member_ids, list):
+        return Response({"error": "members must be a list of user IDs."}, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response({"message": "Group members updated successfully."}, status = status.HTTP_200_OK)
+    members = User.objects.filter(id__in=member_ids)
+    if members.count() != len(member_ids):
+        return Response({"error": "One or more users not found."}, status=status.HTTP_400_BAD_REQUEST)
+
+    group.members.set(member_ids)
+
+    return Response({"message": "Group members updated successfully."}, status=status.HTTP_200_OK)
 
 
 @api_view(['PATCH'])
@@ -131,7 +142,6 @@ def update_private(request, groupID):
     if group.created_by != request.user:
         return Response({"error" : "Only the creator of the group can update the privacy setting."}, status = status.HTTP_403_FORBIDDEN)
 
-    private = request.data.get("private")
     if private is  None:
         return Response({"error": "No privacy setting provided."}, status=status.HTTP_400_BAD_REQUEST)
     

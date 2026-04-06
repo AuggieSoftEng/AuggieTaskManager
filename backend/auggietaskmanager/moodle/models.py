@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 # This model represents a course in Moodle that can be associated with tasks and study groups.
-class Courses(models.Model):
+class Course(models.Model):
     # The unique identifier for the course, represented as a string (e.g., "CSC101"). This field serves as the primary key for the model.
     courseID = models.CharField(max_length=10, primary_key=True)
 
