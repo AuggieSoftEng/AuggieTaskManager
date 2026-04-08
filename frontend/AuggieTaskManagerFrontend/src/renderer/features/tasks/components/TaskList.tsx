@@ -11,6 +11,8 @@ export interface TaskListProps {
   completeTask: (task: Task) => Promise<void>;
   deleteTask: (taskId: number) => Promise<void>;
   createTask: (values: TaskForm) => Promise<boolean>;
+  onSyncMoodle?: () => void;
+  isMoodleSyncing?: boolean;
 }
 
 export const TaskList = ({
@@ -20,6 +22,8 @@ export const TaskList = ({
   completeTask,
   deleteTask,
   createTask,
+  onSyncMoodle,
+  isMoodleSyncing = false,
 }: TaskListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleClose = () => {
@@ -59,6 +63,16 @@ export const TaskList = ({
                 <ArrowDownNarrowWide className="h-4 w-4" aria-hidden />
               )}
             </button>
+            {onSyncMoodle && (
+              <button
+                type="button"
+                className="btn btn-outline btn-primary shrink-0 whitespace-nowrap"
+                disabled={isMoodleSyncing}
+                onClick={() => onSyncMoodle()}
+              >
+                {isMoodleSyncing ? 'Syncing…' : 'Sync from Moodle'}
+              </button>
+            )}
             <button
               type="button"
               className="btn btn-primary"

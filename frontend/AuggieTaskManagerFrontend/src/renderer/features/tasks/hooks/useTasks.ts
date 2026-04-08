@@ -13,19 +13,49 @@ export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [moodleUrl, setMoodleUrl] = useState<string | null>(
-    AuthService.getCurrentUser()?.moodle_url
+    Boolean(AuthService.getCurrentUser()?.moodle_url) ? AuthService.getCurrentUser()?.moodle_url : null
   );
   const [isAscending, setIsAscending] = useState<boolean>(true);
   const [hasMoodleUrl, setHasMoodleUrl] = useState<boolean>(
     moodleUrl !== null && moodleUrl !== ''
   );
+  const [isMoodleSyncing, setIsMoodleSyncing] = useState(false);
 
   /** Syncs Moodle calendar; replaces local tasks with the full list returned by the server. */
-  const handleImportMoodleTasks = useCallback(async () => {
-    if (moodleUrl) {
-      const result = await TaskService.loadMoodleCalendarUrl(moodleUrl);
+  const handleSyncMoodleTasks = useCallback(async () => {
+    const url = (
+      moodleUrl ??
+      AuthService.getCurrentUser()?.moodle_url ??
+      ''
+    ).trim();
+    if (!url) {
+      setErrorMessage('Add your Moodle calendar URL to sync.');
+      return;
+    }
+    setIsMoodleSyncing(true);
+    setErrorMessage(null);
+    try {
+      const result = await TaskService.loadMoodleCalendarUrl(url);
       setTasks(result);
       setHasMoodleUrl(true);
+      setMoodleUrl(url);
+
+      try {
+        const current = AuthService.getCurrentUser();
+        const profile = await AuthService.getUserProfile();
+        if (!current || current.moodle_url !== profile.moodle_url) {
+          AuthService.saveUser(profile);
+        }
+      } catch {
+        const current = AuthService.getCurrentUser();
+        if (current && current.moodle_url !== url) {
+          AuthService.saveUser({ ...current, moodle_url: url });
+        }
+      }
+    } catch {
+      setErrorMessage('Error syncing Moodle calendar');
+    } finally {
+      setIsMoodleSyncing(false);
     }
   }, [moodleUrl]);
 
@@ -111,7 +141,8 @@ export function useTasks() {
     moodleUrl,
     setMoodleUrl,
     hasMoodleUrl,
-    handleImportMoodleTasks,
+    handleSyncMoodleTasks,
+    isMoodleSyncing,
     fetchTasks,
     updateTask,
     deleteTask,

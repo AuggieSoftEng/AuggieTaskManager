@@ -1,10 +1,14 @@
 import { axiosInstance } from '../../../api/axiosInstance';
 import { ENDPOINTS } from '../../../api/endpoints';
-import { UserProfile, SignupData, LoginData, AuthResponse } from '../../../types/user';
+import {
+  UserProfile,
+  SignupData,
+  LoginData,
+  AuthResponse,
+} from '../../../types/user';
 
 // Handles all authentication-related API calls and session management
 export class AuthService {
-
   // Key used to store the authentication token in sessionStorage
   private static TOKEN_KEY = 'auggie_token';
 
@@ -15,7 +19,9 @@ export class AuthService {
       return response.data;
     } catch (error: any) {
       // Return a readable error if the request fails
-      throw new Error(error.response?.data?.error || 'Failed to fetch user data');
+      throw new Error(
+        error.response?.data?.error || 'Failed to fetch user data'
+      );
     }
   }
 
@@ -44,8 +50,7 @@ export class AuthService {
       // Store the authentication token for future requests
       this.saveToken(token);
       // Also save user data for easy access
-      this.saveUser(user); 
-      
+      this.saveUser(user);
 
       return response.data;
     } catch (error: any) {
@@ -54,7 +59,7 @@ export class AuthService {
   }
 
   static async logOut(): Promise<{ message: string }> {
-    try { 
+    try {
       const response = await axiosInstance.post(ENDPOINTS.AUTH_LOGOUT);
       this.removeToken();
       this.removeUser();
@@ -93,11 +98,10 @@ export class AuthService {
   // Save the current user's data to sessionStorage
   static saveUser(user: UserProfile): void {
     // Store user data in sessionStorage
-      sessionStorage.setItem('user', JSON.stringify(user));
+    sessionStorage.setItem('user', JSON.stringify(user));
   }
 
   static removeUser(): void {
     sessionStorage.removeItem('user');
   }
-
 }

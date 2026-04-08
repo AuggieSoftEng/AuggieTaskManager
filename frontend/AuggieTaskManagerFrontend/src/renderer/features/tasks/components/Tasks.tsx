@@ -12,7 +12,8 @@ export const Tasks = () => {
     moodleUrl,
     setMoodleUrl,
     hasMoodleUrl,
-    handleImportMoodleTasks,
+    handleSyncMoodleTasks,
+    isMoodleSyncing,
     fetchTasks,
     updateTask,
     deleteTask,
@@ -42,9 +43,10 @@ export const Tasks = () => {
               <button
                 type="button"
                 className="btn btn-primary shrink-0 whitespace-nowrap"
-                onClick={handleImportMoodleTasks}
+                disabled={isMoodleSyncing}
+                onClick={handleSyncMoodleTasks}
               >
-                Import Tasks
+                {isMoodleSyncing ? 'Syncing…' : 'Import Tasks'}
               </button>
             </div>
             <p className="label mt-1">
@@ -60,6 +62,8 @@ export const Tasks = () => {
         completeTask={completeTask}
         deleteTask={deleteTask}
         createTask={createTask}
+        onSyncMoodle={hasMoodleUrl ? handleSyncMoodleTasks : undefined}
+        isMoodleSyncing={hasMoodleUrl ? isMoodleSyncing : undefined}
       />
     </div>
   );
