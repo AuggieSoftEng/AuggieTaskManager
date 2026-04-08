@@ -48,6 +48,7 @@ export class TaskService {
       description: task.description,
       due_date: task.due_date,
       course: task.course,
+      semester: task.semester,
       completed: task.completed,
       source: task.source,
     });

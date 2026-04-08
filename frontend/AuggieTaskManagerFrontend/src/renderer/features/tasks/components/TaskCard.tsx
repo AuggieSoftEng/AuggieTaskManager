@@ -53,6 +53,9 @@ export const TaskCard = ({
         {task.course != null && task.course !== '' && (
           <p>Course: {task.course}</p>
         )}
+        {task.semester !== '' && task.semester !== null && (
+          <p>Semester: {task.semester}</p>
+        )}
         <p>Completed: {task.completed ? 'Yes' : 'No'}</p>
         {task.source && <p>Source: {task.source}</p>}
         <div className="card-actions justify-end gap-1">
