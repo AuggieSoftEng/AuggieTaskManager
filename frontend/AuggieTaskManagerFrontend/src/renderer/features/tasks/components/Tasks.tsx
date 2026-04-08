@@ -5,7 +5,9 @@ import { useTasks } from '../hooks/useTasks';
 
 export const Tasks = () => {
   const {
-    tasks,
+    sortedTasks,
+    isAscending,
+    setIsAscending,
     errorMessage,
     moodleUrl,
     setMoodleUrl,
@@ -51,7 +53,14 @@ export const Tasks = () => {
           </fieldset>
         </div>
       )}
-      <TaskList tasks={tasks} completeTask={completeTask} deleteTask={deleteTask} createTask={createTask} />
+      <TaskList
+        tasks={sortedTasks}
+        isAscending={isAscending}
+        setIsAscending={setIsAscending}
+        completeTask={completeTask}
+        deleteTask={deleteTask}
+        createTask={createTask}
+      />
     </div>
   );
 };

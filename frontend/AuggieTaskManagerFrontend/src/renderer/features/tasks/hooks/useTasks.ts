@@ -1,7 +1,7 @@
 /**
  * Task list state: load from the API, import from Moodle, update, and delete.
  */
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Task, TaskForm } from '../../../types/task';
 import { TaskService } from '../services/taskService';
 import { AuthService } from '../../auth/services/authService';
@@ -15,6 +15,7 @@ export function useTasks() {
   const [moodleUrl, setMoodleUrl] = useState<string | null>(
     AuthService.getCurrentUser()?.moodle_url
   );
+  const [isAscending, setIsAscending] = useState<boolean>(true);
   const [hasMoodleUrl, setHasMoodleUrl] = useState<boolean>(
     moodleUrl !== null && moodleUrl !== ''
   );
@@ -91,8 +92,21 @@ export function useTasks() {
     }
   }, []);
 
+  const sortedTasks = useMemo(() => {
+    return [...tasks].sort((a, b) => {
+      const aDate = new Date(a.due_date);
+      const bDate = new Date(b.due_date);
+      return isAscending
+        ? aDate.getTime() - bDate.getTime()
+        : bDate.getTime() - aDate.getTime();
+    });
+  }, [tasks, isAscending]);
+
   return {
     tasks,
+    sortedTasks,
+    isAscending,
+    setIsAscending,
     errorMessage,
     moodleUrl,
     setMoodleUrl,

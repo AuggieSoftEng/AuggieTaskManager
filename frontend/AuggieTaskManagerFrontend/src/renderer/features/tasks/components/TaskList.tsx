@@ -1,10 +1,13 @@
 import { TaskCard } from './TaskCard';
 import { Task, TaskForm } from '../../../types/task';
-import { useState } from 'react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
+import { ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react';
 import { TaskFormModal } from './TaskFormModal';
 
 export interface TaskListProps {
   tasks: Task[];
+  isAscending: boolean;
+  setIsAscending: Dispatch<SetStateAction<boolean>>;
   completeTask: (task: Task) => Promise<void>;
   deleteTask: (taskId: number) => Promise<void>;
   createTask: (values: TaskForm) => Promise<boolean>;
@@ -12,6 +15,8 @@ export interface TaskListProps {
 
 export const TaskList = ({
   tasks,
+  isAscending,
+  setIsAscending,
   completeTask,
   deleteTask,
   createTask,
@@ -31,13 +36,37 @@ export const TaskList = ({
       <ul className="list bg-base-100 rounded-box shadow-md">
         <li className="flex items-center justify-between gap-2 p-4 pb-2 text-xl opacity-60 tracking-wide">
           <span>Tasks</span>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => setIsOpen(true)}
-          >
-            Add Task
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="btn btn-primary btn-square btn-sm"
+              aria-pressed={isAscending}
+              aria-label={
+                isAscending
+                  ? 'Sorted by due date ascending. Activate to sort descending.'
+                  : 'Sorted by due date descending. Activate to sort ascending.'
+              }
+              title={
+                isAscending
+                  ? 'Due date ascending — click for descending'
+                  : 'Due date descending — click for ascending'
+              }
+              onClick={() => setIsAscending((prev) => !prev)}
+            >
+              {isAscending ? (
+                <ArrowUpNarrowWide className="h-4 w-4" aria-hidden />
+              ) : (
+                <ArrowDownNarrowWide className="h-4 w-4" aria-hidden />
+              )}
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => setIsOpen(true)}
+            >
+              Add Task
+            </button>
+          </div>
         </li>
         <TaskFormModal
           open={isOpen}

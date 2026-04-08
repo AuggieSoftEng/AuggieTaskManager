@@ -8,6 +8,18 @@ export interface TaskCardProps {
   onDelete?: () => void;
 }
 
+function formatDueDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleString(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
 export const TaskCard = ({ task, onComplete, onDelete }: TaskCardProps) => {
   return (
     <div className="card card-border bg-base-200 w-full">
@@ -15,7 +27,7 @@ export const TaskCard = ({ task, onComplete, onDelete }: TaskCardProps) => {
         <h2 className="card-title">{task.title}</h2>
         <p>{task.description || 'No description.'}</p>
         {task.due_date != null && task.due_date !== '' && (
-          <p>Due date: {task.due_date}</p>
+          <p>Due date: {formatDueDate(task.due_date)}</p>
         )}
         {task.course != null && task.course !== '' && (
           <p>Course: {task.course}</p>
