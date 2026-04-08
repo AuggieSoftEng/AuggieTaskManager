@@ -20,11 +20,11 @@ export function useTasks() {
     moodleUrl !== null && moodleUrl !== ''
   );
 
-  /** Loads tasks from the user’s Moodle calendar URL and appends them to the list. */
+  /** Syncs Moodle calendar; replaces local tasks with the full list returned by the server. */
   const handleImportMoodleTasks = useCallback(async () => {
     if (moodleUrl) {
       const result = await TaskService.loadMoodleCalendarUrl(moodleUrl);
-      setTasks((prev) => [...prev, ...result]);
+      setTasks(result);
       setHasMoodleUrl(true);
     }
   }, [moodleUrl]);

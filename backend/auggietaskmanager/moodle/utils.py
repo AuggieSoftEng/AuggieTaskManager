@@ -151,6 +151,9 @@ def add_moodle_tasks(calendar_events, user):
     Args:
         calendar_events (List[Dict]): list of calendar events
     """
+    if not calendar_events:
+        return []
+
     # Add the tasks to the database in bulk
     created_tasks = Task.objects.bulk_create(
         [
@@ -177,7 +180,36 @@ def get_user_moodle_tasks(user_id):
     Returns:
         List[Task]: list of moodle tasks
     """
+
     return Task.objects.filter(user_id=user_id, source="moodle")
+
+
+def sync_moodle_tasks(moodle_url, user):
+    """Fetch Moodle calendar data and create tasks only for events not already stored.
+
+    Args:
+        moodle_url (str): Moodle iCalendar export URL.
+        user: Django User instance owning the tasks.
+
+    Returns:
+        QuerySet of all Task rows for this user (manual and Moodle), after sync.
+    """
+    calendar_events = extract_calendar_data(moodle_url)
+
+    if not calendar_events:
+        return Task.objects.filter(user=user)
+
+    external_ids = [event["external_id"] for event in calendar_events]
+    existing_ids = set(
+        Task.objects.filter(
+            user=user,
+            source="moodle",
+            external_id__in=external_ids,
+        ).values_list("external_id", flat=True)
+    )
+    new_events = [event for event in calendar_events if event["external_id"] not in existing_ids]
+    add_moodle_tasks(new_events, user)
+    return Task.objects.filter(user=user)
 
 
 def get_user_tasks(user_id):
