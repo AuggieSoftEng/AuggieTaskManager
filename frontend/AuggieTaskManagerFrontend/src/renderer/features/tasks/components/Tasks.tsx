@@ -18,6 +18,7 @@ export const Tasks = () => {
     updateTask,
     deleteTask,
     completeTask,
+    uncompleteTask,
     createTask,
   } = useTasks();
 
@@ -60,6 +61,7 @@ export const Tasks = () => {
         isAscending={isAscending}
         setIsAscending={setIsAscending}
         completeTask={completeTask}
+        uncompleteTask={uncompleteTask}
         deleteTask={deleteTask}
         createTask={createTask}
         onSyncMoodle={hasMoodleUrl ? handleSyncMoodleTasks : undefined}

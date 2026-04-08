@@ -9,6 +9,7 @@ export interface TaskListProps {
   isAscending: boolean;
   setIsAscending: Dispatch<SetStateAction<boolean>>;
   completeTask: (task: Task) => Promise<void>;
+  uncompleteTask: (task: Task) => Promise<void>;
   deleteTask: (taskId: number) => Promise<void>;
   createTask: (values: TaskForm) => Promise<boolean>;
   onSyncMoodle?: () => void;
@@ -20,6 +21,7 @@ export const TaskList = ({
   isAscending,
   setIsAscending,
   completeTask,
+  uncompleteTask,
   deleteTask,
   createTask,
   onSyncMoodle,
@@ -95,6 +97,7 @@ export const TaskList = ({
             <TaskCard
               task={task}
               onComplete={() => completeTask(task)}
+              onUncomplete={() => uncompleteTask(task)}
               onDelete={() => deleteTask(task.id)}
             />
           </li>

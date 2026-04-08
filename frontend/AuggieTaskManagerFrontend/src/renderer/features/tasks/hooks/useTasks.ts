@@ -13,7 +13,9 @@ export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [moodleUrl, setMoodleUrl] = useState<string | null>(
-    Boolean(AuthService.getCurrentUser()?.moodle_url) ? AuthService.getCurrentUser()?.moodle_url : null
+    Boolean(AuthService.getCurrentUser()?.moodle_url)
+      ? AuthService.getCurrentUser()?.moodle_url
+      : null
   );
   const [isAscending, setIsAscending] = useState<boolean>(true);
   const [hasMoodleUrl, setHasMoodleUrl] = useState<boolean>(
@@ -100,6 +102,23 @@ export function useTasks() {
     }
   }, []);
 
+  /** Marks a task as not completed on the server and updates local state. */
+  const uncompleteTask = useCallback(async (task: Task) => {
+    try {
+      const updated = await TaskService.updateTask({
+        ...task,
+        completed: false,
+      });
+      setTasks((tasks: Task[]) =>
+        tasks.map((currentTask: Task) =>
+          currentTask.id === task.id ? updated : currentTask
+        )
+      );
+    } catch {
+      setErrorMessage('Error updating task');
+    }
+  }, []);
+
   /** Deletes a task on the server and removes it from local state. */
   const deleteTask = useCallback(async (taskId: number) => {
     try {
@@ -148,5 +167,6 @@ export function useTasks() {
     deleteTask,
     createTask,
     completeTask,
+    uncompleteTask,
   };
 }
