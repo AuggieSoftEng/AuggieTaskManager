@@ -24,6 +24,9 @@ ignore = [
     "W293",  # Blank line contains whitespace
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/*.py" = ["E501"]
+
 [tool.ruff.lint.isort]
 # Ensures your Django imports are grouped correctly
 section-order = ["future", "standard-library", "third-party", "django", "first-party", "local-folder"]
