@@ -19,8 +19,12 @@ jobs:
               run: |
                   python -m pip install --upgrade pip
                   pip install ruff
-            - name: Run Ruff
-              run: ruff check
+            - name: Fix lint + format (Ruff)
+              run: |
+                  ruff check --fix
+                  ruff format
+            - name: Ensure no changes needed
+              run: git diff --exit-code
 
     lint-frontend:
         runs-on: ubuntu-latest
@@ -36,8 +40,10 @@ jobs:
                   cache-dependency-path: frontend/AuggieTaskManagerFrontend/package-lock.json
             - name: Install dependencies
               run: npm ci
-            - name: Prettier
-              run: npx prettier --check "src/**/*.{ts,tsx,css,json}"
+            - name: Fix formatting (Prettier)
+              run: npx prettier --write "src/**/*.{ts,tsx,css,json}"
+            - name: Ensure no changes needed
+              run: git diff --exit-code
 
     test-backend:
         runs-on: ubuntu-latest
