@@ -6,11 +6,17 @@ on:
     pull_request:
         branches: ["**"]
 
+permissions:
+    contents: write
+
 jobs:
     lint-backend:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
+              with:
+                  # Needed to push back to PR branch
+                  fetch-depth: 0
             - name: Set up Python
               uses: actions/setup-python@v5
               with:
@@ -23,7 +29,23 @@ jobs:
               run: |
                   ruff check --fix
                   ruff format
-            - name: Ensure no changes needed
+            - name: Commit + push Ruff fixes (PRs only)
+              if: >
+                  github.event_name == 'pull_request' &&
+                  github.event.pull_request.head.repo.full_name == github.repository
+              run: |
+                  if git diff --quiet; then
+                    echo "No Ruff changes."
+                    exit 0
+                  fi
+
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+                  git add -A
+                  git commit -m "chore(ci): apply ruff fixes"
+                  git push origin "HEAD:${{ github.head_ref }}"
+            - name: Ensure clean after Ruff
               run: git diff --exit-code
 
     lint-frontend:
@@ -33,6 +55,8 @@ jobs:
                 working-directory: frontend/AuggieTaskManagerFrontend
         steps:
             - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
             - uses: actions/setup-node@v4
               with:
                   node-version: "20"
@@ -42,7 +66,23 @@ jobs:
               run: npm ci
             - name: Fix formatting (Prettier)
               run: npx prettier --write "src/**/*.{ts,tsx,css,json}"
-            - name: Ensure no changes needed
+            - name: Commit + push Prettier fixes (PRs only)
+              if: >
+                  github.event_name == 'pull_request' &&
+                  github.event.pull_request.head.repo.full_name == github.repository
+              run: |
+                  if git diff --quiet; then
+                    echo "No Prettier changes."
+                    exit 0
+                  fi
+
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+                  git add -A
+                  git commit -m "chore(ci): apply prettier formatting"
+                  git push origin "HEAD:${{ github.head_ref }}"
+            - name: Ensure clean after Prettier
               run: git diff --exit-code
 
     test-backend:
