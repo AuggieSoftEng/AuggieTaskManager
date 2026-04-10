@@ -4,6 +4,7 @@ import { SideBar } from '../common/SideBar';
 import { useAuth } from '../../features/auth/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { AlertCard } from '../common/AlertCard';
+import { StudyGroupList } from '../../features/studygroups/components/studyGroupsList';
 
 import {
   Menu,
@@ -60,7 +61,7 @@ export const DashboardLayout = () => {
       case 'Task Calendar':
         return <div className = "p-4">Task Calendar content</div>
       case 'Study Groups':
-        return <div className = "p-4">Study Groups content</div>
+        return <div className = "p-4"><StudyGroupList /></div>
       default:
         return <div className = "p-4">Page Content</div>;
     }
