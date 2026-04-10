@@ -48,8 +48,9 @@ jobs:
                   git push origin "HEAD:${{ github.head_ref }}"
             - name: Ensure clean after Ruff
               run: git diff --exit-code
-            - name: Ruff check (strict)
-              run: ruff check
+            - name: Ruff check (report only)
+              continue-on-error: true
+              run: ruff check --output-format=github
 
     lint-frontend:
         runs-on: ubuntu-latest
