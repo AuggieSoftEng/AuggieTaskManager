@@ -5,10 +5,7 @@ import { TaskService, type ApiTask } from '../../tasks/services/taskService';
 import { addDays, formatYmd, startOfDay } from '../utils/calendarDate';
 import { parseTaskDayKey } from '../utils/calendarTask';
 
-export function useTaskCalendarRange(params: {
-  start: Date;
-  days: number;
-}) {
+export function useTaskCalendarRange(params: { start: Date; days: number }) {
   const [tasks, setTasks] = useState<ApiTask[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +58,10 @@ export function useTaskCalendarRange(params: {
       try {
         const startIso = rangeStart.toISOString();
         const endIso = addDays(rangeEnd, 1).toISOString();
-        const data = await TaskService.getCalendarTasks({ start: startIso, end: endIso });
+        const data = await TaskService.getCalendarTasks({
+          start: startIso,
+          end: endIso,
+        });
         if (!cancelled) setTasks(data);
       } catch {
         if (!cancelled) setError('Failed to load tasks for the week.');
@@ -89,4 +89,3 @@ export function useTaskCalendarRange(params: {
     todayKey,
   };
 }
-

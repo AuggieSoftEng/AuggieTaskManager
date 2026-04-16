@@ -11,7 +11,9 @@ import {
 import { parseTaskDayKey } from '../utils/calendarTask';
 
 export function useTaskCalendar() {
-  const [viewDate, setViewDate] = useState<Date>(() => startOfMonth(new Date()));
+  const [viewDate, setViewDate] = useState<Date>(() =>
+    startOfMonth(new Date())
+  );
   const [tasks, setTasks] = useState<ApiTask[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -88,4 +90,3 @@ export function useTaskCalendar() {
     todayKey,
   };
 }
-
