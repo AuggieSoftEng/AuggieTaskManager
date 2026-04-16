@@ -57,7 +57,10 @@ export const TaskCalendarWeekWidget = () => {
                 <div className="space-y-1">
                   <div className="max-h-28 overflow-auto space-y-1">
                     {dayTasks.map((t) => (
-                      <div key={String(t.id)} className="flex items-center gap-1.5">
+                      <div
+                        key={String(t.id)}
+                        className="flex items-center gap-1.5"
+                      >
                         <span className={taskBadgeClasses(t)}>
                           {t.source === 'moodle' ? 'M' : 'U'}
                         </span>

@@ -115,7 +115,9 @@ function toUpcomingTask(task: unknown): UpcomingTask {
   const title: string = str('title') ?? str('name') ?? 'Untitled';
 
   const id: string =
-    str('id') ?? (num('id') !== null ? String(num('id')) : null) ?? fallbackId();
+    str('id') ??
+    (num('id') !== null ? String(num('id')) : null) ??
+    fallbackId();
 
   const course: string | undefined =
     str('course') ?? str('course_name') ?? str('courseName') ?? undefined;
