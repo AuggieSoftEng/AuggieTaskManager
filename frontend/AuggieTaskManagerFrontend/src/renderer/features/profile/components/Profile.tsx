@@ -290,22 +290,20 @@ export const Profile: React.FC = () => {
             <div>Minor: {minor || 'N/A'}</div>
             <div>Bio: {bio || 'N/A'}</div>
           </div>
-          
         </div>
-        
       </div>
       <div className="flex items-center gap-2">
-            <button className="btn btn-primary btn-sm px-4" onClick={startEditing}>
-              Edit Profile
-            </button>
-            <button
-              className="btn btn-error btn-sm px-4"
-              onClick={handleDelete}
-              disabled={deleting || saving}
-            >
-              {deleting ? 'Deleting...' : saving ? 'Saving...' : 'Delete Account'}
-            </button>
-          </div>
+        <button className="btn btn-primary btn-sm px-4" onClick={startEditing}>
+          Edit Profile
+        </button>
+        <button
+          className="btn btn-error btn-sm px-4"
+          onClick={handleDelete}
+          disabled={deleting || saving}
+        >
+          {deleting ? 'Deleting...' : saving ? 'Saving...' : 'Delete Account'}
+        </button>
+      </div>
     </div>
   );
 };
