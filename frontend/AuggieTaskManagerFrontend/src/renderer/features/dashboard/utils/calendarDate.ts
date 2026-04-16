@@ -57,4 +57,3 @@ export function buildMonthGrid(viewDate: Date): {
 export function monthTitle(d: Date): string {
   return d.toLocaleString(undefined, { month: 'long', year: 'numeric' });
 }
-

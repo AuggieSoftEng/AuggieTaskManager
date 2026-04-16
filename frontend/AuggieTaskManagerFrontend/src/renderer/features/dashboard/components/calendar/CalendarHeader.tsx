@@ -43,7 +43,9 @@ export function CalendarHeader(props: {
   );
 }
 
-export function makeCalendarHeaderHandlers(setViewDate: (updater: (d: Date) => Date) => void) {
+export function makeCalendarHeaderHandlers(
+  setViewDate: (updater: (d: Date) => Date) => void
+) {
   return {
     onPrevMonth: () =>
       setViewDate((d) => new Date(d.getFullYear(), d.getMonth() - 1, 1)),
@@ -52,4 +54,3 @@ export function makeCalendarHeaderHandlers(setViewDate: (updater: (d: Date) => D
     onToday: () => setViewDate(() => startOfMonth(new Date())),
   };
 }
-

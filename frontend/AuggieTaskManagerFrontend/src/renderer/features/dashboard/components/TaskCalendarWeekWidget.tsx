@@ -7,10 +7,11 @@ import { taskBadgeClasses } from '../utils/calendarTask';
 export const TaskCalendarWeekWidget = () => {
   const start = useMemo(() => startOfDay(new Date()), []);
 
-  const { dayKeys, tasksByDay, loading, error, todayKey } = useTaskCalendarRange({
-    start,
-    days: 7,
-  });
+  const { dayKeys, tasksByDay, loading, error, todayKey } =
+    useTaskCalendarRange({
+      start,
+      days: 7,
+    });
 
   const dateLabels = useMemo(() => {
     return dayKeys.map((key, idx) => {
@@ -55,7 +56,10 @@ export const TaskCalendarWeekWidget = () => {
               ) : (
                 <div className="space-y-1">
                   {dayTasks.slice(0, 2).map((t) => (
-                    <div key={String(t.id)} className="flex items-center gap-1.5">
+                    <div
+                      key={String(t.id)}
+                      className="flex items-center gap-1.5"
+                    >
                       <span className={taskBadgeClasses(t)}>
                         {t.source === 'moodle' ? 'M' : 'U'}
                       </span>
@@ -71,7 +75,9 @@ export const TaskCalendarWeekWidget = () => {
                     </div>
                   ))}
                   {dayTasks.length > 2 && (
-                    <div className="text-xs opacity-60">+{dayTasks.length - 2}</div>
+                    <div className="text-xs opacity-60">
+                      +{dayTasks.length - 2}
+                    </div>
                   )}
                 </div>
               )}
@@ -87,5 +93,3 @@ export const TaskCalendarWeekWidget = () => {
     </div>
   );
 };
-
-

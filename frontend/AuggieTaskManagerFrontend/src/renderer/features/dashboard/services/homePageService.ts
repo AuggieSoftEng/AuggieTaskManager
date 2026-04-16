@@ -185,7 +185,9 @@ export class HomePageService {
         const due = new Date(t.dueAt);
         return !Number.isNaN(due.getTime()) && due >= now && due <= end;
       })
-      .sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime());
+      .sort(
+        (a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime()
+      );
 
     return typeof limit === 'number' ? upcoming.slice(0, limit) : upcoming;
   }

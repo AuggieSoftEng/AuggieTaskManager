@@ -15,8 +15,9 @@ export function useHomepage() {
   const sortedUpcomingTasks = useMemo(() => {
     return upcomingTasks
       .slice()
-      .sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime())
-      ;
+      .sort(
+        (a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime()
+      );
   }, [upcomingTasks]);
 
   useEffect(() => {

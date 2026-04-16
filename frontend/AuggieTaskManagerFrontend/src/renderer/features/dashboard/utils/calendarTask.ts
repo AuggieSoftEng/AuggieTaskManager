@@ -19,4 +19,3 @@ export function taskBadgeClasses(t: ApiTask): string {
     ? 'badge badge-outline border-secondary text-secondary opacity-70'
     : 'badge badge-secondary text-secondary-content';
 }
-

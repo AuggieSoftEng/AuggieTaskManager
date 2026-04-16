@@ -65,7 +65,7 @@ export const DashboardLayout = () => {
         );
       case 'Task Calendar':
         return <div className="p-4">Task Calendar content</div>;
-        return <TaskCalendar />
+        return <TaskCalendar />;
       case 'Study Groups':
         return <div className="p-4">Study Groups content</div>;
       default:

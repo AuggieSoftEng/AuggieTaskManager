@@ -88,13 +88,25 @@ function toUpcomingTask(t: ApiTask): UpcomingTask | null {
 }
 
 export const TaskService = {
-  async getUpcomingTasks(params?: { limit?: number; days?: number }): Promise<UpcomingTask[]> {
-    const resp = await axiosInstance.get<ApiTask[]>(ENDPOINTS.TASKS_UPCOMING, { params });
-    return resp.data.map(toUpcomingTask).filter((x): x is UpcomingTask => x !== null);
+  async getUpcomingTasks(params?: {
+    limit?: number;
+    days?: number;
+  }): Promise<UpcomingTask[]> {
+    const resp = await axiosInstance.get<ApiTask[]>(ENDPOINTS.TASKS_UPCOMING, {
+      params,
+    });
+    return resp.data
+      .map(toUpcomingTask)
+      .filter((x): x is UpcomingTask => x !== null);
   },
 
-  async getCalendarTasks(params?: { start?: string; end?: string }): Promise<ApiTask[]> {
-    const resp = await axiosInstance.get<ApiTask[]>(ENDPOINTS.TASKS_CALENDAR, { params });
+  async getCalendarTasks(params?: {
+    start?: string;
+    end?: string;
+  }): Promise<ApiTask[]> {
+    const resp = await axiosInstance.get<ApiTask[]>(ENDPOINTS.TASKS_CALENDAR, {
+      params,
+    });
     return resp.data;
   },
 };

@@ -58,4 +58,3 @@ export function CalendarDayCell(props: {
     </div>
   );
 }
-
