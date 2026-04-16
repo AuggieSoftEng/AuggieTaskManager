@@ -1,30 +1,28 @@
-import { useEffect, useState } from 'react';
-import { fetchStudyGroups } from '../services/studyGroupService';
+import { useState } from 'react';
+
+import { StudyGroupService } from '../services/studyGroupService';
 import { StudyGroup } from '../../../types/studyGroup';
 
-export function useStudyGroups() {
-  const [groups, setGroups] = useState<StudyGroup[]>([]);
-  const [loading, setLoading] = useState(true);
+export const useStudyGroups = () => {
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [groups, setGroups] = useState<StudyGroup[]>([]);
 
-  useEffect(() => {
-    let cancelled = false;
+  const fetchStudyGroups = async (): Promise<StudyGroup[] | null> => {
+    setLoading(true);
+    setError(null);
 
-    fetchStudyGroups()
-      .then((data) => {
-        if (!cancelled) setGroups(data);
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err.message ?? 'Failed to fetch study groups');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+    try {
+      const data = await StudyGroupService.fetchStudyGroups();
+      setGroups(data);
+      return data;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch study groups');
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return { groups, loading, error };
-}
+  return { loading, error, groups, fetchStudyGroups };
+};
