@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchStudyGroups } from '../services/studyGroupService';
-import { StudyGroup } from '../types/studyGroup';
+import { StudyGroup } from '../../../types/studyGroup';
 
 export function useStudyGroups() {
   const [groups, setGroups] = useState<StudyGroup[]>([]);
