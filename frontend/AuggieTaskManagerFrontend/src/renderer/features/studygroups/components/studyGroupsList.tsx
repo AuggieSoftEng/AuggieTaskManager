@@ -1,52 +1,49 @@
 import React from 'react';
-
-interface StudyGroup {
-  id: string;
-  name: string;
-  subject: string;
-  description: string;
-  src: string;
-  altText: string;
-}
-
-const studyGroupData: StudyGroup[] = [
-  {
-    id: '1',
-    name: 'Calculus Study Group',
-    subject: 'Mathematics',
-    description: 'Weekly meetings to work through problem sets and exam prep.',
-    src: '/images/math.png',
-    altText: 'Mathematics group',
-  },
-  {
-    id: '2',
-    name: 'History Reading Circle',
-    subject: 'History',
-    description: 'We discuss assigned readings and share notes every Thursday.',
-    src: '/images/history.png',
-    altText: 'History group',
-  },
-];
+import { useStudyGroups } from '../hooks/useStudyGroups';
 
 export const StudyGroupList: React.FC = () => {
+  const { groups, loading, error } = useStudyGroups();
+
+  if (loading) return <p>Loading study groups...</p>;
+  if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
+
   return (
     <div className="control-pane">
       <div className="control-section">
         <p style={{ fontSize: '20px', fontWeight: 600 }}>Study Groups</p>
         <div id="list-study-groups" style={{ maxHeight: 500, overflowY: 'auto' }}>
-          {studyGroupData.map((group) => (
+          {groups.length === 0 && <p>No study groups found.</p>}
+          {groups.map((group) => (
             <div
-              key={group.id}
+              key={group.groupID}
               className="e-list-wrapper"
               style={{ borderBottom: 'inset', padding: '10px' }}
             >
               <div style={{ display: 'flex', alignItems: 'center', whiteSpace: 'normal' }}>
-                <img
-                  className="e-avatar"
-                  src={group.src}
-                  alt={group.altText}
-                  style={{ background: '#BCBCBC', width: '100px', height: '100px', borderRadius: '4px' }}
-                />
+                {group.image ? (
+                  <img
+                    className="e-avatar"
+                    src={`/media/${group.image}`}
+                    alt={group.name}
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      borderRadius: '4px',
+                      objectFit: 'cover',
+                      flexShrink: 0,
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      borderRadius: '4px',
+                      background: '#BCBCBC',
+                      flexShrink: 0,
+                    }}
+                  />
+                )}
                 <div
                   style={{
                     marginLeft: '20px',
@@ -56,8 +53,13 @@ export const StudyGroupList: React.FC = () => {
                     flexDirection: 'column',
                   }}
                 >
-                  <span style={{ fontSize: '18px', fontWeight: 600, paddingBottom: '3px' }}>{group.name}</span>
-                  <span style={{ fontSize: '14px', color: '#666', paddingBottom: '6px' }}>{group.subject}</span>
+                  <span style={{ fontSize: '18px', fontWeight: 600, paddingBottom: '3px' }}>
+                    {group.name}
+                  </span>
+                  <span style={{ fontSize: '14px', color: '#666', paddingBottom: '6px' }}>
+                    {group.members.length} member{group.members.length !== 1 ? 's' : ''} · Created{' '}
+                    {new Date(group.created_at).toLocaleDateString()}
+                  </span>
                   <div style={{ fontSize: '15px' }}>{group.description}</div>
                 </div>
               </div>
