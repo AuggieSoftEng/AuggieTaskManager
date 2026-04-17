@@ -27,6 +27,7 @@ export const SideBar = ({
 
   // Handle the click event for the sidebar items
   const handleItemClick = (item: string) => {
+    setTooltipsArmed(false);
     if (item === 'Logout') {
       handleLogout();
       return;
@@ -50,6 +51,7 @@ export const SideBar = ({
               isActive(item.name) ? 'bg-primary text-white' : ''
             }`}
             onClick={() => handleItemClick(item.name)}
+            onMouseDown={() => setTooltipsArmed(false)}
             onMouseEnter={() => setTooltipsArmed(true)}
             data-tip={item.name}
           >
