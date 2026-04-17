@@ -125,6 +125,7 @@ export const DashboardLayout = () => {
               sideBarItems={sideBarItems}
               activeItem={activeItem}
               setActiveItem={handleSidebarItemChange}
+              drawerOpen={drawerOpen}
             />
           </div>
         </div>
