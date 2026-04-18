@@ -122,8 +122,7 @@ function toUpcomingTask(task: any): UpcomingTask {
 export class HomePageService {
   static async getDisplayName(): Promise<string> {
     // Prefer cached user data.
-    const cachedUser =
-      getUserFromLocalStorage();
+    const cachedUser = getUserFromLocalStorage();
     const cachedName = getDisplayNameFromUser(cachedUser);
     if (cachedName) return cachedName;
 
