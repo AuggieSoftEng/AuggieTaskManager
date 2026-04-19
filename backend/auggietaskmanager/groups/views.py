@@ -26,18 +26,14 @@ class StudyGroupListCreateView(APIView):
         return Response(serializer.data)
         
     def post(self, request):
-        print("REQUEST DATA:", request.data)
-        print("CONTENT TYPE:", request.content_type)
+        
         
         serializer = StudyGroupSerializer(data=request.data)
-        print("IS VALID:", serializer.is_valid())
-        print("ERRORS:", serializer.errors)
+        
         
         if serializer.is_valid():
             group = serializer.save(created_by=request.user)
             group.members.add(request.user)
-            print("GROUP CREATED:", group.groupID)
-            print("MEMBERS:", group.members.all())
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors)
@@ -183,3 +179,37 @@ def leave_study_group(request, groupID):
     
     group.members.remove(request.user)
     return Response({"message": "Left study group successfully."}, status=status.HTTP_200_OK)
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_image(request, groupID):
+    try:
+        group = StudyGroup.objects.get(groupID=groupID)
+    except StudyGroup.DoesNotExist:
+        return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if group.created_by != request.user:
+        return Response({"error": "Only the creator can update the image."}, status=status.HTTP_403_FORBIDDEN)
+
+    if 'image' not in request.FILES:
+        return Response({"error": "No image provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+    group.image = request.FILES['image']
+    group.save()
+    return Response({"message": "Image updated successfully.", "image": group.image.url}, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_study_group(request, groupID):
+    try:
+        group = StudyGroup.objects.get(groupID=groupID)
+    except StudyGroup.DoesNotExist:
+        return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if group.created_by != request.user:
+        return Response({"error": "Only the creator can delete this group."}, status=status.HTTP_403_FORBIDDEN)
+
+    group.delete()
+    return Response({"message": "Study group deleted successfully."}, status=status.HTTP_200_OK)

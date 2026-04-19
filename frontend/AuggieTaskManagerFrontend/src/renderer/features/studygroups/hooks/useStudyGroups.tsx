@@ -122,5 +122,23 @@ export const useStudyGroups = () => {
     }
   };
 
-return { loading, error, groups, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup, createStudyGroup, updateStudyGroup };
+
+  const deleteStudyGroup = async (groupID: number): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await StudyGroupService.deleteStudyGroup(groupID);
+      setGroups((prev) => prev.filter((g) => g.groupID !== groupID));
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete study group');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+// add to return:
+return { loading, error, groups, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup, createStudyGroup, updateStudyGroup, deleteStudyGroup };
 };

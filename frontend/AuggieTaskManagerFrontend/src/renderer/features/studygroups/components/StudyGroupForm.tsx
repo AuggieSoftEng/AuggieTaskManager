@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useStudyGroups } from '../hooks/useStudyGroups';
+import { StudyGroupService } from '../services/studyGroupService';
+import { API_BASE } from '../../../../config';
 
 interface StudyGroupFormProps {
   groupID?: number | null;
@@ -34,6 +36,9 @@ export const StudyGroupForm: React.FC<StudyGroupFormProps> = ({ groupID, onBack 
   const handleSubmit = async () => {
     if (isEditing && groupID) {
       const success = await updateStudyGroup(groupID, name, description, isPrivate);
+      if (success && image) {
+        await StudyGroupService.updateStudyGroupImage(groupID, image);
+      }
       if (success) onBack();
     } else {
       const formData = new FormData();
@@ -86,12 +91,67 @@ export const StudyGroupForm: React.FC<StudyGroupFormProps> = ({ groupID, onBack 
       </div>
 
       <div style={{ marginBottom: '24px' }}>
-        <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>Image</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files?.[0] ?? null)}
-        />
+        <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>
+          {isEditing ? 'Update Image (optional)' : 'Image (optional)'}
+        </label>
+        <div
+          style={{
+            border: '2px dashed #ccc',
+            borderRadius: '8px',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '10px',
+            background: '#fafafa',
+          }}
+        >
+          {isEditing && existingGroup?.image && !image && (
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ fontSize: '13px', color: '#666', marginBottom: '4px' }}>Current image:</p>
+              <img
+                src={`${API_BASE}${existingGroup.image}`}
+                alt="Current group"
+                style={{ width: '80px', height: '80px', borderRadius: '4px', objectFit: 'cover' }}
+              />
+            </div>
+          )}
+          {image && (
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ fontSize: '13px', color: '#666', marginBottom: '4px' }}>New image:</p>
+              <img
+                src={URL.createObjectURL(image)}
+                alt="Preview"
+                style={{ width: '80px', height: '80px', borderRadius: '4px', objectFit: 'cover' }}
+              />
+            </div>
+          )}
+          <label
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 14px',
+              fontSize: '14px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+              background: '#fff',
+              cursor: 'pointer',
+              color: '#333',
+            }}
+          >
+            📎 {image ? image.name : 'Choose image'}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files?.[0] ?? null)}
+              style={{ display: 'none' }}
+            />
+          </label>
+          <p style={{ fontSize: '13px', color: '#999', margin: 0 }}>
+            PNG, JPG, GIF up to 10MB
+          </p>
+        </div>
       </div>
 
       <div style={{ display: 'flex', gap: '12px' }}>

@@ -12,7 +12,7 @@ interface StudyGroupListProps {
 }
 
 export const StudyGroupList: React.FC<StudyGroupListProps> = ({ onCreateClick, onEditClick }) => {
-  const { groups, loading, error, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup } = useStudyGroups();
+  const { groups, loading, error, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup, deleteStudyGroup } = useStudyGroups();
   const [showingAll, setShowingAll] = useState(false);
 
   useEffect(() => {
@@ -157,20 +157,40 @@ export const StudyGroupList: React.FC<StudyGroupListProps> = ({ onCreateClick, o
                       </button>
                     )}
                     {group.created_by === currentUserID && (
-                      <button
-                        onClick={() => onEditClick(group.groupID)}
-                        style={{
-                          padding: '4px 12px',
-                          fontSize: '13px',
-                          cursor: 'pointer',
-                          borderRadius: '4px',
-                          border: '1px solid #ccc',
-                          background: '#fff',
-                          color: '#333',
-                        }}
-                      >
-                        Edit
-                      </button>
+                      <>
+                        <button
+                          onClick={() => onEditClick(group.groupID)}
+                          style={{
+                            padding: '4px 12px',
+                            fontSize: '13px',
+                            cursor: 'pointer',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc',
+                            background: '#fff',
+                            color: '#333',
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (window.confirm('Are you sure you want to delete this group?')) {
+                              deleteStudyGroup(group.groupID);
+                            }
+                          }}
+                          style={{
+                            padding: '4px 12px',
+                            fontSize: '13px',
+                            cursor: 'pointer',
+                            borderRadius: '4px',
+                            border: 'none',
+                            background: '#e53935',
+                            color: '#fff',
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>

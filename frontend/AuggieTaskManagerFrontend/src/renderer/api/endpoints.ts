@@ -22,5 +22,7 @@ export const ENDPOINTS = {
   STUDY_GROUPS_UPDATE_NAME: (groupID: number) => `/groups/${groupID}/update_group_name/`,
   STUDY_GROUPS_UPDATE_DESCRIPTION: (groupID: number) => `/groups/${groupID}/update_description/`,
   STUDY_GROUPS_UPDATE_PRIVATE: (groupID: number) => `/groups/${groupID}/update_private/`,
+  STUDY_GROUPS_UPDATE_IMAGE: (groupID: number) => `/groups/${groupID}/update_image/`,
+  STUDY_GROUPS_DELETE: (groupID: number) => `/groups/${groupID}/delete/`,
 
 } as const;

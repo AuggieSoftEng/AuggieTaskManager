@@ -68,4 +68,25 @@ export class StudyGroupService {
     }
   }
 
+  static async updateStudyGroupImage(groupID: number, image: File): Promise<void> {
+    try {
+      const formData = new FormData();
+      formData.append('image', image);
+      await axiosInstance.patch(ENDPOINTS.STUDY_GROUPS_UPDATE_IMAGE(groupID), formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to update image');
+    }
+  }
+
+  static async deleteStudyGroup(groupID: number): Promise<{ message: string }> {
+    try {
+      const response = await axiosInstance.delete(ENDPOINTS.STUDY_GROUPS_DELETE(groupID));
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to delete study group');
+    }
+  }
+
 }
