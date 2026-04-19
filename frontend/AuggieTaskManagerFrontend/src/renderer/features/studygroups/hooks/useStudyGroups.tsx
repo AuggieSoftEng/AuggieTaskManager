@@ -86,13 +86,13 @@ export const useStudyGroups = () => {
 
 
 
-    const createStudyGroup = async (formData: FormData): Promise<StudyGroup | null> => {
+  const createStudyGroup = async (formData: FormData): Promise<StudyGroup | null> => {
     setLoading(true);
     setError(null);
 
     try {
       const data = await StudyGroupService.createStudyGroup(formData);
-      setGroups((prev) => [...prev, data]);
+      await fetchMyStudyGroups(); // ← refetch instead of local state update
       return data;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create study group');

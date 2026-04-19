@@ -77,6 +77,7 @@ export const DashboardLayout = () => {
         return (
           <div className="p-4">
             <StudyGroupList
+              key={activeItem} // ← forces remount when navigating back
               onCreateClick={() => setActiveItem('Study Groups Create')}
               onEditClick={(groupID) => {
                 setEditingGroupID(groupID);
@@ -88,7 +89,11 @@ export const DashboardLayout = () => {
       case 'Study Groups Create':
         return (
           <div className="p-4">
-            <StudyGroupForm onBack={() => setActiveItem('Study Groups')} />
+            <StudyGroupForm
+              onBack={async () => {
+                setActiveItem('Study Groups');
+              }}
+            />
           </div>
         );
       case 'Study Groups Edit':

@@ -26,20 +26,19 @@ class StudyGroupListCreateView(APIView):
         return Response(serializer.data)
         
     def post(self, request):
-        """
-        POST: Creates a new StudyGroup
-        """
-
-        # The data from the request is passed to the StudyGroupSerializer for validation and deserialization. The serializer checks if the provided data meets the requirements defined in the StudyGroup model (e.g., required fields, field types, etc.). If the data is valid, the save method is called to create a new StudyGroup instance. The created_by field is set to the authenticated user (request.user) to associate the new group with its creator. Finally, the serialized data of the newly created group is returned in the response with a status code of 201 (Created). If the data is invalid, the errors from the serializer are returned in the response.
-        serializer = StudyGroupSerializer(data = request.data)
-
-        # The is_valid() method checks if the data provided in the request meets the validation criteria defined in the StudyGroupSerializer. If the data is valid, it proceeds to save the new StudyGroup instance. If the data is invalid, it returns the errors encountered during validation in the response.
+        print("REQUEST DATA:", request.data)
+        print("CONTENT TYPE:", request.content_type)
+        
+        serializer = StudyGroupSerializer(data=request.data)
+        print("IS VALID:", serializer.is_valid())
+        print("ERRORS:", serializer.errors)
+        
         if serializer.is_valid():
-
             group = serializer.save(created_by=request.user)
-            group.members.add(request.user)  # ← add creator as a member automatically
+            group.members.add(request.user)
+            print("GROUP CREATED:", group.groupID)
+            print("MEMBERS:", group.members.all())
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # If the data provided in the request is invalid according to the validation rules defined in the StudyGroupSerializer, the errors encountered during validation are returned in the response. This allows the client to understand what went wrong with the data they submitted and make necessary corrections before trying again.
         else:
             return Response(serializer.errors)
 
