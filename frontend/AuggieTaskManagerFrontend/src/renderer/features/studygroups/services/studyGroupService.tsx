@@ -47,7 +47,7 @@ export class StudyGroupService {
 
   static async createStudyGroup(formData: FormData): Promise<StudyGroup> {
     try {
-      const response = await axiosInstance.post(ENDPOINTS.STUDY_GROUPS_CREATE, formData, {
+      const response = await axiosInstance.post(ENDPOINTS.STUDY_GROUPS, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       return response.data;

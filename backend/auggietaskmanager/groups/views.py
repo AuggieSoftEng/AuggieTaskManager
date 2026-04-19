@@ -36,10 +36,9 @@ class StudyGroupListCreateView(APIView):
         # The is_valid() method checks if the data provided in the request meets the validation criteria defined in the StudyGroupSerializer. If the data is valid, it proceeds to save the new StudyGroup instance. If the data is invalid, it returns the errors encountered during validation in the response.
         if serializer.is_valid():
 
-            # The save() method of the serializer is called to create a new StudyGroup instance based on the validated data. The created_by field is set to the authenticated user (request.user) to associate the new group with its creator. After saving the new group, the serialized data of the newly created group is returned in the response with a status code of 201 (Created).
-            serializer.save(created_by=request.user)
+            group = serializer.save(created_by=request.user)
+            group.members.add(request.user)  # ← add creator as a member automatically
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-            
         # If the data provided in the request is invalid according to the validation rules defined in the StudyGroupSerializer, the errors encountered during validation are returned in the response. This allows the client to understand what went wrong with the data they submitted and make necessary corrections before trying again.
         else:
             return Response(serializer.errors)
