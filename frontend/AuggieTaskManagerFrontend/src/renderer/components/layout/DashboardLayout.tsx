@@ -19,6 +19,7 @@ import {
 import { Tasks } from '../../features/tasks/components/Tasks';
 import { Profile } from '../../features/profile/components/Profile';
 import { Homepage } from '../../features/dashboard/components/Homepage';
+import { StudyGroupForm } from '../../features/studygroups/components/StudyGroupForm';
 export const DashboardLayout = () => {
   // Sidebar items to be used in the SideBar component
   const sideBarItems = [
@@ -33,6 +34,7 @@ export const DashboardLayout = () => {
 
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState<string>('Homepage'); // The active item in the sidebar
+  const [editingGroupID, setEditingGroupID] = useState<number | null>(null); // The ID of the study group being edited, or null if not editing
   const [message, setMessage] = useState<string | null>(null); // The message to be displayed in the AlertCard
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // The error message to be displayed in the AlertCard
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -55,7 +57,7 @@ export const DashboardLayout = () => {
     setDrawerOpen(false);
   };
 
-  const renderContent = () => {
+    const renderContent = () => {
     switch (activeItem) {
       case 'Profile':
         return <Profile />;
@@ -72,7 +74,29 @@ export const DashboardLayout = () => {
       case 'Task Calendar':
         return <div className="p-4">Task Calendar content</div>;
       case 'Study Groups':
-        return <div className = "p-4"><StudyGroupList /></div>
+        return (
+          <div className="p-4">
+            <StudyGroupList
+              onCreateClick={() => setActiveItem('Study Groups Create')}
+              onEditClick={(groupID) => {
+                setEditingGroupID(groupID);
+                setActiveItem('Study Groups Edit');
+              }}
+            />
+          </div>
+        );
+      case 'Study Groups Create':
+        return (
+          <div className="p-4">
+            <StudyGroupForm onBack={() => setActiveItem('Study Groups')} />
+          </div>
+        );
+      case 'Study Groups Edit':
+        return (
+          <div className="p-4">
+            <StudyGroupForm groupID={editingGroupID} onBack={() => setActiveItem('Study Groups')} />
+          </div>
+        );
       default:
         return <div className="p-4">Page Content</div>;
     }

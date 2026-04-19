@@ -6,8 +6,12 @@ import { AuthService } from '../../auth/services/authService';
 const currentUser = AuthService.getCurrentUser();
 const currentUserID = currentUser?.user?.id;
 
+interface StudyGroupListProps {
+  onCreateClick: () => void;
+  onEditClick: (groupID: number) => void;
+}
 
-export const StudyGroupList: React.FC = () => {
+export const StudyGroupList: React.FC<StudyGroupListProps> = ({ onCreateClick, onEditClick }) => {
   const { groups, loading, error, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup } = useStudyGroups();
   const [showingAll, setShowingAll] = useState(false);
 
@@ -34,20 +38,36 @@ export const StudyGroupList: React.FC = () => {
           <p style={{ fontSize: '20px', fontWeight: 600, margin: 0 }}>
             {showingAll ? 'All Study Groups' : 'My Study Groups'}
           </p>
-          <button
-            onClick={handleToggle}
-            style={{
-              padding: '6px 14px',
-              fontSize: '14px',
-              cursor: 'pointer',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              background: showingAll ? '#f0f0f0' : '#1a73e8',
-              color: showingAll ? '#333' : '#fff',
-            }}
-          >
-            {showingAll ? 'View My Groups' : 'View All Groups'}
-          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={handleToggle}
+              style={{
+                padding: '6px 14px',
+                fontSize: '14px',
+                cursor: 'pointer',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+                background: showingAll ? '#f0f0f0' : '#1a73e8',
+                color: showingAll ? '#333' : '#fff',
+              }}
+            >
+              {showingAll ? 'View My Groups' : 'View All Groups'}
+            </button>
+            <button
+              onClick={onCreateClick}
+              style={{
+                padding: '6px 14px',
+                fontSize: '14px',
+                cursor: 'pointer',
+                borderRadius: '4px',
+                border: 'none',
+                background: '#34a853',
+                color: '#fff',
+              }}
+            >
+              + Create Group
+            </button>
+          </div>
         </div>
         <div id="list-study-groups" style={{ maxHeight: 500, overflowY: 'auto' }}>
           {groups.length === 0 && <p>No study groups found.</p>}
@@ -104,7 +124,7 @@ export const StudyGroupList: React.FC = () => {
                     {new Date(group.created_at).toLocaleDateString()}
                   </span>
                   <div style={{ fontSize: '15px' }}>{group.description}</div>
-                  <div style={{ marginTop: '8px' }}>
+                  <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
                     {group.members.includes(currentUserID) ? (
                       <button
                         onClick={() => leaveStudyGroup(group.groupID)}
@@ -134,6 +154,22 @@ export const StudyGroupList: React.FC = () => {
                         }}
                       >
                         Join
+                      </button>
+                    )}
+                    {group.created_by === currentUserID && (
+                      <button
+                        onClick={() => onEditClick(group.groupID)}
+                        style={{
+                          padding: '4px 12px',
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                          borderRadius: '4px',
+                          border: '1px solid #ccc',
+                          background: '#fff',
+                          color: '#333',
+                        }}
+                      >
+                        Edit
                       </button>
                     )}
                   </div>

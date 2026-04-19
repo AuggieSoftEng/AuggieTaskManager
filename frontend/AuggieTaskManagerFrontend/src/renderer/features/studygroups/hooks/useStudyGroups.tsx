@@ -122,8 +122,5 @@ export const useStudyGroups = () => {
     }
   };
 
-// add to return:
 return { loading, error, groups, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup, createStudyGroup, updateStudyGroup };
-
-  return { loading, error, groups, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup };
 };
