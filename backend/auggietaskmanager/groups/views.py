@@ -1,4 +1,3 @@
-
 from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -64,7 +63,7 @@ def update_description(request, groupID):
     PATCH: Updates the description of a study group. Only the creator of the group can update the description.
     """
     try:
-        group = StudyGroup.objects.get(id=groupID)
+        group = StudyGroup.objects.get(groupID=groupID)
     except StudyGroup.DoesNotExist:
         return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
     
@@ -84,7 +83,7 @@ def update_group_name(request, groupID):
     """
 
     try:
-        group = StudyGroup.objects.get(id=groupID)
+        group = StudyGroup.objects.get(groupID=groupID)
     except StudyGroup.DoesNotExist:
         return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -104,7 +103,7 @@ def update_members(request, groupID):
     """
 
     try:
-        group = StudyGroup.objects.get(id=groupID)
+        group = StudyGroup.objects.get(groupID=groupID)
     except StudyGroup.DoesNotExist:
         return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -136,7 +135,7 @@ def update_private(request, groupID):
     private = request.data.get("private")
 
     try:
-        group = StudyGroup.objects.get(id=groupID)
+        group = StudyGroup.objects.get(groupID=groupID)
     except StudyGroup.DoesNotExist:
         return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
     
@@ -164,7 +163,7 @@ def join_study_group(request, groupID):
     POST: Adds the authenticated user to the specified study group
     """
     try:
-        group = StudyGroup.objects.get(id=groupID)
+        group = StudyGroup.objects.get(groupID=groupID)
     except StudyGroup.DoesNotExist:
         return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -180,7 +179,7 @@ def leave_study_group(request, groupID):
     POST: Removes the authenticated user from the specified study group
     """
     try:
-        group = StudyGroup.objects.get(id=groupID)
+        group = StudyGroup.objects.get(groupID=groupID)
     except StudyGroup.DoesNotExist:
         return Response({"error": "Study group not found."}, status=status.HTTP_404_NOT_FOUND)
     

@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useStudyGroups } from '../hooks/useStudyGroups';
 import { API_BASE } from '../../../../config';
+import { AuthService } from '../../auth/services/authService';
+
+const currentUser = AuthService.getCurrentUser();
+const currentUserID = currentUser?.user?.id;
+
 
 export const StudyGroupList: React.FC = () => {
-  const { groups, loading, error, fetchStudyGroups, fetchAllStudyGroups } = useStudyGroups();
+  const { groups, loading, error, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup } = useStudyGroups();
   const [showingAll, setShowingAll] = useState(false);
 
   useEffect(() => {
-    fetchStudyGroups();
+    fetchMyStudyGroups();
   }, []);
 
   const handleToggle = async () => {
     if (showingAll) {
-      await fetchStudyGroups();
+      await fetchMyStudyGroups();
     } else {
       await fetchAllStudyGroups();
     }
@@ -99,6 +104,39 @@ export const StudyGroupList: React.FC = () => {
                     {new Date(group.created_at).toLocaleDateString()}
                   </span>
                   <div style={{ fontSize: '15px' }}>{group.description}</div>
+                  <div style={{ marginTop: '8px' }}>
+                    {group.members.includes(currentUserID) ? (
+                      <button
+                        onClick={() => leaveStudyGroup(group.groupID)}
+                        style={{
+                          padding: '4px 12px',
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                          borderRadius: '4px',
+                          border: '1px solid #ccc',
+                          background: '#f0f0f0',
+                          color: '#333',
+                        }}
+                      >
+                        Leave
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => joinStudyGroup(group.groupID)}
+                        style={{
+                          padding: '4px 12px',
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                          borderRadius: '4px',
+                          border: 'none',
+                          background: '#1a73e8',
+                          color: '#fff',
+                        }}
+                      >
+                        Join
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
