@@ -44,4 +44,28 @@ export class StudyGroupService {
     }
 
   }
+
+  static async createStudyGroup(formData: FormData): Promise<StudyGroup> {
+    try {
+      const response = await axiosInstance.post(ENDPOINTS.STUDY_GROUPS_CREATE, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to create study group');
+    }
+  }
+
+  static async updateStudyGroup(groupID: number, name: string, description: string, private_: boolean): Promise<void> {
+    try {
+      await Promise.all([
+        axiosInstance.patch(ENDPOINTS.STUDY_GROUPS_UPDATE_NAME(groupID), { name }),
+        axiosInstance.patch(ENDPOINTS.STUDY_GROUPS_UPDATE_DESCRIPTION(groupID), { description }),
+        axiosInstance.patch(ENDPOINTS.STUDY_GROUPS_UPDATE_PRIVATE(groupID), { private: private_ }),
+      ]);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to update study group');
+    }
+  }
+
 }

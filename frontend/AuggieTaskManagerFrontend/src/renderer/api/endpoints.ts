@@ -18,5 +18,9 @@ export const ENDPOINTS = {
   STUDY_GROUPS: '/groups/', // Endpoint to fetch study groups the user is a member of, and to create new study groups
   STUDY_GROUPS_JOIN: (groupId: number) => `/groups/${groupId}/join/`, // Endpoint to join a study group
   STUDY_GROUPS_LEAVE: (groupId: number) => `/groups/${groupId}/leave/`, // Endpoint to leave a study group
+  STUDY_GROUPS_CREATE: '/groups/create/', // Endpoint to create a new study group
+  STUDY_GROUPS_UPDATE_NAME: (groupId: number) => `/groups/${groupId}/name/`, // Endpoint to update a study group's name
+  STUDY_GROUPS_UPDATE_DESCRIPTION: (groupID: number) => `/groups/${groupID}/update_description/`,
+  STUDY_GROUPS_UPDATE_PRIVATE: (groupID: number) => `/groups/${groupID}/update_private/`, 
 
 } as const;

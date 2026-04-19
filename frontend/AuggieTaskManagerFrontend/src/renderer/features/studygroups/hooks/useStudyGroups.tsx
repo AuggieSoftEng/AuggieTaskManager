@@ -84,5 +84,46 @@ export const useStudyGroups = () => {
     }
   };
 
+
+
+    const createStudyGroup = async (formData: FormData): Promise<StudyGroup | null> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await StudyGroupService.createStudyGroup(formData);
+      setGroups((prev) => [...prev, data]);
+      return data;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create study group');
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateStudyGroup = async (groupID: number, name: string, description: string, private_: boolean): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await StudyGroupService.updateStudyGroup(groupID, name, description, private_);
+      setGroups((prev) =>
+        prev.map((g) =>
+          g.groupID === groupID ? { ...g, name, description, private: private_ } : g
+        )
+      );
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update study group');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+// add to return:
+return { loading, error, groups, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup, createStudyGroup, updateStudyGroup };
+
   return { loading, error, groups, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup };
 };

@@ -13,6 +13,8 @@ import { AuthService } from './features/auth/services/authService';
 import { LoginLayout } from './components/layout/LogInLayout';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { Homepage } from './features/dashboard/components/Homepage';
+import { StudyGroupList } from './features/studygroups/components/studyGroupsList';
+import { StudyGroupForm } from './features/studygroups/components/studyGroupForm';
 
 export const ProtectedRoute = () => {
   if (!AuthService.isAuthenticated()) return <Navigate to="/login" replace />;
@@ -40,6 +42,9 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<DashboardLayout />}>
             <Route index element={<Homepage />} />
+            <Route path="study-groups" element={<StudyGroupList />} />
+            <Route path="study-groups/create" element={<StudyGroupForm />} />
+            <Route path="study-groups/edit/:groupID" element={<StudyGroupForm />} />
           </Route>
         </Route>
 
