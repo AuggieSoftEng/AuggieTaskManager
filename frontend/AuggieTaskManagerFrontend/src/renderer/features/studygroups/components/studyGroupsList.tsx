@@ -1,13 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStudyGroups } from '../hooks/useStudyGroups';
 import { API_BASE } from '../../../../config';
 
 export const StudyGroupList: React.FC = () => {
-  const { groups, loading, error, fetchStudyGroups } = useStudyGroups();
+  const { groups, loading, error, fetchStudyGroups, fetchAllStudyGroups } = useStudyGroups();
+  const [showingAll, setShowingAll] = useState(false);
 
   useEffect(() => {
     fetchStudyGroups();
-  }, [fetchStudyGroups]);
+  }, []);
+
+  const handleToggle = async () => {
+    if (showingAll) {
+      await fetchStudyGroups();
+    } else {
+      await fetchAllStudyGroups();
+    }
+    setShowingAll((prev) => !prev);
+  };
 
   if (loading) return <p>Loading study groups...</p>;
   if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
@@ -15,7 +25,25 @@ export const StudyGroupList: React.FC = () => {
   return (
     <div className="control-pane">
       <div className="control-section">
-        <p style={{ fontSize: '20px', fontWeight: 600 }}>Study Groups</p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+          <p style={{ fontSize: '20px', fontWeight: 600, margin: 0 }}>
+            {showingAll ? 'All Study Groups' : 'My Study Groups'}
+          </p>
+          <button
+            onClick={handleToggle}
+            style={{
+              padding: '6px 14px',
+              fontSize: '14px',
+              cursor: 'pointer',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+              background: showingAll ? '#f0f0f0' : '#1a73e8',
+              color: showingAll ? '#333' : '#fff',
+            }}
+          >
+            {showingAll ? 'View My Groups' : 'View All Groups'}
+          </button>
+        </div>
         <div id="list-study-groups" style={{ maxHeight: 500, overflowY: 'auto' }}>
           {groups.length === 0 && <p>No study groups found.</p>}
           {groups.map((group) => (
@@ -28,11 +56,7 @@ export const StudyGroupList: React.FC = () => {
                 {group.image ? (
                   <img
                     className="e-avatar"
-                    src={
-                      group.image.startsWith('http')
-                        ? group.image
-                        : `${API_BASE}${group.image.startsWith('/') ? '' : '/'}${group.image}`
-                    }
+                    src={`${API_BASE}${group.image}`}
                     alt={group.name}
                     style={{
                       width: '100px',
@@ -62,8 +86,13 @@ export const StudyGroupList: React.FC = () => {
                     flexDirection: 'column',
                   }}
                 >
-                  <span style={{ fontSize: '18px', fontWeight: 600, paddingBottom: '3px' }}>
+                  <span style={{ fontSize: '18px', fontWeight: 600, paddingBottom: '3px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     {group.name}
+                    {group.private ? (
+                      <span title="Private" style={{ fontSize: '14px' }}>🔒</span>
+                    ) : (
+                      <span title="Public" style={{ fontSize: '14px' }}>🌐</span>
+                    )}
                   </span>
                   <span style={{ fontSize: '14px', color: '#666', paddingBottom: '6px' }}>
                     {group.members.length} member{group.members.length !== 1 ? 's' : ''} · Created{' '}

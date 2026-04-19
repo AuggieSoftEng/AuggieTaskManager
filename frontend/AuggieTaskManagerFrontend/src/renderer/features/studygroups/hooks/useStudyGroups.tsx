@@ -24,5 +24,22 @@ export const useStudyGroups = () => {
     }
   }, []);
 
-  return { loading, error, groups, fetchStudyGroups };
+  const fetchAllStudyGroups = async (): Promise<StudyGroup[] | null> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await StudyGroupService.fetchAllStudyGroups();
+      setGroups(data);
+      return data;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch all study groups');
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  return { loading, error, groups, fetchStudyGroups, fetchAllStudyGroups };
 };

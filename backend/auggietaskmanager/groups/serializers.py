@@ -9,5 +9,5 @@ class StudyGroupSerializer(serializers.ModelSerializer):
         # The StudyGroupSerializer converts StudyGroup model instances to JSON format and vice versa.
         model = StudyGroup
         # The fields attribute specifies which fields of the StudyGroup model should be included in the serialized output.
-        fields = ['groupID', 'name', 'description', 'image', 'members', 'created_by', 'created_at']
+        fields = ['groupID', 'name', 'description', 'image', 'private', 'members', 'created_by', 'created_at']
     

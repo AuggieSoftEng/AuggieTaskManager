@@ -5,11 +5,23 @@ import { StudyGroup } from '../../../types/studyGroup';
 export class StudyGroupService {
   static async fetchStudyGroups(): Promise<StudyGroup[]> {
     try {
-      const response = await axiosInstance.get(ENDPOINTS.STUDY_GROUPS_ALL);
+      const response = await axiosInstance.get(ENDPOINTS.STUDY_GROUPS);
       return response.data;
     } catch (error: any) {
       throw new Error(
         error.response?.data?.error || 'Failed to fetch study groups'
+      );
+    }
+  }
+
+
+static async fetchAllStudyGroups(): Promise<StudyGroup[]> {
+    try {
+      const response = await axiosInstance.get(ENDPOINTS.STUDY_GROUPS_ALL);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.error || 'Failed to fetch all study groups'
       );
     }
   }
