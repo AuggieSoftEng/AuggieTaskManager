@@ -50,7 +50,7 @@ export const StudyGroupList: React.FC<StudyGroupListProps> = ({ onCreateClick, o
             </button>
             <button
               onClick={onCreateClick}
-              className="btn btn-outline btn-primary shrink-0 whitespace-nowrap"
+              className="btn btn-primary"
             >
               + Create Group
             </button>

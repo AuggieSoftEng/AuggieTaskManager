@@ -103,7 +103,7 @@ export const StudyGroupForm: React.FC<StudyGroupFormProps> = ({ groupID, onBack 
             flexDirection: 'column',
             alignItems: 'center',
             gap: '10px',
-            background: '#fafafa',
+            background: '#730101',
           }}
         >
           {isEditing && existingGroup?.image && !image && (
@@ -158,29 +158,13 @@ export const StudyGroupForm: React.FC<StudyGroupFormProps> = ({ groupID, onBack 
         <button
           onClick={handleSubmit}
           disabled={loading || !name}
-          style={{
-            padding: '8px 20px',
-            fontSize: '15px',
-            borderRadius: '4px',
-            border: 'none',
-            background: loading || !name ? '#ccc' : '#1a73e8',
-            color: '#fff',
-            cursor: loading || !name ? 'not-allowed' : 'pointer',
-          }}
+          className="btn btn-primary"
         >
           {loading ? 'Saving...' : isEditing ? 'Save Changes' : 'Create Group'}
         </button>
         <button
           onClick={onBack}
-          style={{
-            padding: '8px 20px',
-            fontSize: '15px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            background: '#fff',
-            color: '#333',
-            cursor: 'pointer',
-          }}
+          className="btn btn-primary"
         >
           Cancel
         </button>
