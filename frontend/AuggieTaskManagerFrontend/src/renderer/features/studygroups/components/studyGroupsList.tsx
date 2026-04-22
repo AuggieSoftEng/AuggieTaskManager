@@ -62,7 +62,7 @@ export const StudyGroupList: React.FC<StudyGroupListProps> = ({ onCreateClick, o
             <div
               key={group.groupID}
               className="e-list-wrapper"
-              style={{ borderBottom: 'inset', padding: '10px' }}
+              style={{ borderBottom: '1px solid #6c6c6c', padding: '10px' }}
             >
               <div style={{ display: 'flex', alignItems: 'center', whiteSpace: 'normal' }}>
                 {group.image ? (
