@@ -216,5 +216,7 @@ def delete_study_group(request, groupID):
     if group.created_by != request.user:
         return Response({"error": "Only the creator can delete this group."}, status=status.HTTP_403_FORBIDDEN)
 
+    if group.image:
+        group.image.delete(save=False)
     group.delete()
     return Response({"message": "Study group deleted successfully."}, status=status.HTTP_200_OK)
