@@ -114,7 +114,7 @@ export const DashboardLayout = () => {
         <div className="drawer-content">
           {/* Navbar */}
           <NavBar
-            title="Dashboard"
+            title={activeItem.charAt(0).toUpperCase() + activeItem.slice(1)}
             drawerOpen={drawerOpen}
             onDrawerOpenChange={setDrawerOpen}
           />

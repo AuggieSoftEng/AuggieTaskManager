@@ -50,7 +50,6 @@ export const Tasks = () => {
 
   const listHeader = (
     <>
-      <span>Tasks</span>
       <div className="flex items-center gap-2">
         <button
           type="button"
