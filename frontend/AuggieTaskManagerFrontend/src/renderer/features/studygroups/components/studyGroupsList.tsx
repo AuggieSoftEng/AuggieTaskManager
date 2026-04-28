@@ -13,8 +13,20 @@ interface StudyGroupListProps {
   onEditClick: (groupID: number) => void;
 }
 
-export const StudyGroupList: React.FC<StudyGroupListProps> = ({ onCreateClick, onEditClick }) => {
-  const { groups, loading, error, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup, deleteStudyGroup } = useStudyGroups();
+export const StudyGroupList: React.FC<StudyGroupListProps> = ({
+  onCreateClick,
+  onEditClick,
+}) => {
+  const {
+    groups,
+    loading,
+    error,
+    fetchMyStudyGroups,
+    fetchAllStudyGroups,
+    joinStudyGroup,
+    leaveStudyGroup,
+    deleteStudyGroup,
+  } = useStudyGroups();
   const [showingAll, setShowingAll] = useState(false);
 
   useEffect(() => {
@@ -36,27 +48,30 @@ export const StudyGroupList: React.FC<StudyGroupListProps> = ({ onCreateClick, o
   return (
     <div className="control-pane">
       <div className="control-section">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '12px',
+          }}
+        >
           <p style={{ fontSize: '20px', fontWeight: 600, margin: 0 }}>
             {showingAll ? 'All Study Groups' : 'My Study Groups'}
           </p>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button
-              onClick={handleToggle}
-              className="btn btn-primary"
-              
-            >
+            <button onClick={handleToggle} className="btn btn-primary">
               {showingAll ? 'View My Groups' : 'View All Groups'}
             </button>
-            <button
-              onClick={onCreateClick}
-              className="btn btn-primary"
-            >
+            <button onClick={onCreateClick} className="btn btn-primary">
               + Create Group
             </button>
           </div>
         </div>
-        <div id="list-study-groups" style={{ maxHeight: 500, overflowY: 'auto' }}>
+        <div
+          id="list-study-groups"
+          style={{ maxHeight: 500, overflowY: 'auto' }}
+        >
           {groups.length === 0 && <p>No study groups found.</p>}
           {groups.map((group) => (
             <div
@@ -64,7 +79,13 @@ export const StudyGroupList: React.FC<StudyGroupListProps> = ({ onCreateClick, o
               className="e-list-wrapper"
               style={{ borderBottom: '1px solid #6c6c6c', padding: '10px' }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', whiteSpace: 'normal' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  whiteSpace: 'normal',
+                }}
+              >
                 {group.image ? (
                   <img
                     className="e-avatar"
@@ -98,20 +119,34 @@ export const StudyGroupList: React.FC<StudyGroupListProps> = ({ onCreateClick, o
                     flexDirection: 'column',
                   }}
                 >
-                  <span style={{ fontSize: '18px', fontWeight: 600, paddingBottom: '3px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span
+                    style={{
+                      fontSize: '18px',
+                      fontWeight: 600,
+                      paddingBottom: '3px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                    }}
+                  >
                     {group.name}
-                    {group.private ? (
-                      <Lock/>
-                    ) : (
-                      <Globe/>
-                    )}
+                    {group.private ? <Lock /> : <Globe />}
                   </span>
-                  <span style={{ fontSize: '14px', color: '#666', paddingBottom: '6px' }}>
-                    {group.members.length} member{group.members.length !== 1 ? 's' : ''} · Created{' '}
+                  <span
+                    style={{
+                      fontSize: '14px',
+                      color: '#666',
+                      paddingBottom: '6px',
+                    }}
+                  >
+                    {group.members.length} member
+                    {group.members.length !== 1 ? 's' : ''} · Created{' '}
                     {new Date(group.created_at).toLocaleDateString()}
                   </span>
                   <div style={{ fontSize: '15px' }}>{group.description}</div>
-                  <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                  <div
+                    style={{ marginTop: '8px', display: 'flex', gap: '8px' }}
+                  >
                     {group.members.includes(currentUserID) ? (
                       <button
                         onClick={() => leaveStudyGroup(group.groupID)}
@@ -127,7 +162,9 @@ export const StudyGroupList: React.FC<StudyGroupListProps> = ({ onCreateClick, o
                         Join
                       </button>
                     ) : (
-                      <span style={{ fontSize: '14px', color: '#666' }}>Private group - invitation only</span>
+                      <span style={{ fontSize: '14px', color: '#666' }}>
+                        Private group - invitation only
+                      </span>
                     )}
                     {group.created_by === currentUserID && (
                       <>
@@ -139,12 +176,15 @@ export const StudyGroupList: React.FC<StudyGroupListProps> = ({ onCreateClick, o
                         </button>
                         <button
                           onClick={() => {
-                            if (window.confirm('Are you sure you want to delete this group?')) {
+                            if (
+                              window.confirm(
+                                'Are you sure you want to delete this group?'
+                              )
+                            ) {
                               deleteStudyGroup(group.groupID);
                             }
                           }}
                           className="btn btn-outline btn-primary shrink-0 whitespace-nowrap"
-                          
                         >
                           Delete
                         </button>

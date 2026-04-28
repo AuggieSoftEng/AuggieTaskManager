@@ -8,8 +8,18 @@ interface StudyGroupFormProps {
   onBack: () => void;
 }
 
-export const StudyGroupForm: React.FC<StudyGroupFormProps> = ({ groupID, onBack }) => {
-  const { groups, fetchAllStudyGroups, createStudyGroup, updateStudyGroup, loading, error } = useStudyGroups();
+export const StudyGroupForm: React.FC<StudyGroupFormProps> = ({
+  groupID,
+  onBack,
+}) => {
+  const {
+    groups,
+    fetchAllStudyGroups,
+    createStudyGroup,
+    updateStudyGroup,
+    loading,
+    error,
+  } = useStudyGroups();
 
   const isEditing = !!groupID;
   const existingGroup = groups.find((g) => g.groupID === groupID);
@@ -35,7 +45,12 @@ export const StudyGroupForm: React.FC<StudyGroupFormProps> = ({ groupID, onBack 
 
   const handleSubmit = async () => {
     if (isEditing && groupID) {
-      const success = await updateStudyGroup(groupID, name, description, isPrivate);
+      const success = await updateStudyGroup(
+        groupID,
+        name,
+        description,
+        isPrivate
+      );
       if (success && image) {
         await StudyGroupService.updateStudyGroupImage(groupID, image);
       }
@@ -58,29 +73,58 @@ export const StudyGroupForm: React.FC<StudyGroupFormProps> = ({ groupID, onBack 
         {isEditing ? 'Edit Study Group' : 'Create Study Group'}
       </h2>
 
-      {error && <p style={{ color: 'red', marginBottom: '16px' }}>Error: {error}</p>}
+      {error && (
+        <p style={{ color: 'red', marginBottom: '16px' }}>Error: {error}</p>
+      )}
 
       <div style={{ marginBottom: '16px' }}>
-        <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>Name</label>
+        <label
+          style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}
+        >
+          Name
+        </label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', fontSize: '15px' }}
+          style={{
+            width: '100%',
+            padding: '8px',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            fontSize: '15px',
+          }}
         />
       </div>
 
       <div style={{ marginBottom: '16px' }}>
-        <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>Description</label>
+        <label
+          style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}
+        >
+          Description
+        </label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={4}
-          style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', fontSize: '15px' }}
+          style={{
+            width: '100%',
+            padding: '8px',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            fontSize: '15px',
+          }}
         />
       </div>
 
-      <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div
+        style={{
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+        }}
+      >
         <label style={{ fontWeight: 500 }}>Private</label>
         <input
           type="checkbox"
@@ -91,7 +135,9 @@ export const StudyGroupForm: React.FC<StudyGroupFormProps> = ({ groupID, onBack 
       </div>
 
       <div style={{ marginBottom: '24px' }}>
-        <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>
+        <label
+          style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}
+        >
           {isEditing ? 'Update Image (optional)' : 'Image (optional)'}
         </label>
         <div
@@ -108,21 +154,39 @@ export const StudyGroupForm: React.FC<StudyGroupFormProps> = ({ groupID, onBack 
         >
           {isEditing && existingGroup?.image && !image && (
             <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: '13px', color: '#666', marginBottom: '4px' }}>Current image:</p>
+              <p
+                style={{ fontSize: '13px', color: '#666', marginBottom: '4px' }}
+              >
+                Current image:
+              </p>
               <img
                 src={`${API_BASE}${existingGroup.image}`}
                 alt="Current group"
-                style={{ width: '80px', height: '80px', borderRadius: '4px', objectFit: 'cover' }}
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  borderRadius: '4px',
+                  objectFit: 'cover',
+                }}
               />
             </div>
           )}
           {image && (
             <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: '13px', color: '#666', marginBottom: '4px' }}>New image:</p>
+              <p
+                style={{ fontSize: '13px', color: '#666', marginBottom: '4px' }}
+              >
+                New image:
+              </p>
               <img
                 src={URL.createObjectURL(image)}
                 alt="Preview"
-                style={{ width: '80px', height: '80px', borderRadius: '4px', objectFit: 'cover' }}
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  borderRadius: '4px',
+                  objectFit: 'cover',
+                }}
               />
             </div>
           )}
@@ -162,10 +226,7 @@ export const StudyGroupForm: React.FC<StudyGroupFormProps> = ({ groupID, onBack 
         >
           {loading ? 'Saving...' : isEditing ? 'Save Changes' : 'Create Group'}
         </button>
-        <button
-          onClick={onBack}
-          className="btn btn-primary"
-        >
+        <button onClick={onBack} className="btn btn-primary">
           Cancel
         </button>
       </div>
