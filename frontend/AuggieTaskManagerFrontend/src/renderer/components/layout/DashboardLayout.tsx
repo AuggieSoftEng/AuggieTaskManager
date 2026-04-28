@@ -58,7 +58,7 @@ export const DashboardLayout = () => {
     setDrawerOpen(false);
   };
 
-    const renderContent = () => {
+  const renderContent = () => {
     switch (activeItem) {
       case 'Profile':
         return <Profile />;
@@ -109,7 +109,10 @@ export const DashboardLayout = () => {
       case 'Study Groups Edit':
         return (
           <div className="p-4">
-            <StudyGroupForm groupID={editingGroupID} onBack={() => setActiveItem('Study Groups')} />
+            <StudyGroupForm
+              groupID={editingGroupID}
+              onBack={() => setActiveItem('Study Groups')}
+            />
           </div>
         );
       default:
@@ -158,7 +161,7 @@ export const DashboardLayout = () => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          
+
           <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
             {/* Sidebar content here */}
             <SideBar

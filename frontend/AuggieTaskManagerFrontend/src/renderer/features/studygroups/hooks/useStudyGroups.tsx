@@ -21,7 +21,9 @@ export const useStudyGroups = () => {
       setGroups(data);
       return data;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch study groups');
+      setError(
+        err instanceof Error ? err.message : 'Failed to fetch study groups'
+      );
       return null;
     } finally {
       setLoading(false);
@@ -37,14 +39,18 @@ export const useStudyGroups = () => {
       setGroups(data);
       return data;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch all study groups');
+      setError(
+        err instanceof Error ? err.message : 'Failed to fetch all study groups'
+      );
       return null;
     } finally {
       setLoading(false);
     }
   };
 
-  const joinStudyGroup = async (groupID: number): Promise<{ message: string } | null> => {
+  const joinStudyGroup = async (
+    groupID: number
+  ): Promise<{ message: string } | null> => {
     setLoading(true);
     setError(null);
 
@@ -52,19 +58,25 @@ export const useStudyGroups = () => {
       const data = await StudyGroupService.joinStudyGroup(groupID);
       setGroups((prev) =>
         prev.map((g) =>
-          g.groupID === groupID ? { ...g, members: [...g.members, currentUserID] } : g
+          g.groupID === groupID
+            ? { ...g, members: [...g.members, currentUserID] }
+            : g
         )
       );
       return data;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to join study group');
+      setError(
+        err instanceof Error ? err.message : 'Failed to join study group'
+      );
       return null;
     } finally {
       setLoading(false);
     }
   };
 
-  const leaveStudyGroup = async (groupID: number): Promise<{ message: string } | null> => {
+  const leaveStudyGroup = async (
+    groupID: number
+  ): Promise<{ message: string } | null> => {
     setLoading(true);
     setError(null);
 
@@ -72,21 +84,25 @@ export const useStudyGroups = () => {
       const data = await StudyGroupService.leaveStudyGroup(groupID);
       setGroups((prev) =>
         prev.map((g) =>
-          g.groupID === groupID ? { ...g, members: g.members.filter((id) => id !== currentUserID) } : g
+          g.groupID === groupID
+            ? { ...g, members: g.members.filter((id) => id !== currentUserID) }
+            : g
         )
       );
       return data;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to leave study group');
+      setError(
+        err instanceof Error ? err.message : 'Failed to leave study group'
+      );
       return null;
     } finally {
       setLoading(false);
     }
   };
 
-
-
-  const createStudyGroup = async (formData: FormData): Promise<StudyGroup | null> => {
+  const createStudyGroup = async (
+    formData: FormData
+  ): Promise<StudyGroup | null> => {
     setLoading(true);
     setError(null);
 
@@ -95,33 +111,48 @@ export const useStudyGroups = () => {
       await fetchMyStudyGroups(); // ← refetch instead of local state update
       return data;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create study group');
+      setError(
+        err instanceof Error ? err.message : 'Failed to create study group'
+      );
       return null;
     } finally {
       setLoading(false);
     }
   };
 
-  const updateStudyGroup = async (groupID: number, name: string, description: string, private_: boolean): Promise<boolean> => {
+  const updateStudyGroup = async (
+    groupID: number,
+    name: string,
+    description: string,
+    private_: boolean
+  ): Promise<boolean> => {
     setLoading(true);
     setError(null);
 
     try {
-      await StudyGroupService.updateStudyGroup(groupID, name, description, private_);
+      await StudyGroupService.updateStudyGroup(
+        groupID,
+        name,
+        description,
+        private_
+      );
       setGroups((prev) =>
         prev.map((g) =>
-          g.groupID === groupID ? { ...g, name, description, private: private_ } : g
+          g.groupID === groupID
+            ? { ...g, name, description, private: private_ }
+            : g
         )
       );
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update study group');
+      setError(
+        err instanceof Error ? err.message : 'Failed to update study group'
+      );
       return false;
     } finally {
       setLoading(false);
     }
   };
-
 
   const deleteStudyGroup = async (groupID: number): Promise<boolean> => {
     setLoading(true);
@@ -132,13 +163,26 @@ export const useStudyGroups = () => {
       setGroups((prev) => prev.filter((g) => g.groupID !== groupID));
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete study group');
+      setError(
+        err instanceof Error ? err.message : 'Failed to delete study group'
+      );
       return false;
     } finally {
       setLoading(false);
     }
   };
 
-// add to return:
-return { loading, error, groups, fetchMyStudyGroups, fetchAllStudyGroups, joinStudyGroup, leaveStudyGroup, createStudyGroup, updateStudyGroup, deleteStudyGroup };
+  // add to return:
+  return {
+    loading,
+    error,
+    groups,
+    fetchMyStudyGroups,
+    fetchAllStudyGroups,
+    joinStudyGroup,
+    leaveStudyGroup,
+    createStudyGroup,
+    updateStudyGroup,
+    deleteStudyGroup,
+  };
 };
