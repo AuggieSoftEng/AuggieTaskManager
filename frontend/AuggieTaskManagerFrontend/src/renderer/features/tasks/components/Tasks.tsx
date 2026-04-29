@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ArrowDownNarrowWide, ArrowUpNarrowWide } from 'lucide-react';
 import { TaskFormModal } from './TaskFormModal';
 import { WeeklyTasks } from './WeeklyTasks';
@@ -19,20 +19,28 @@ export const Tasks = () => {
     hasMoodleUrl,
     handleSyncMoodleTasks,
     isMoodleSyncing,
-    fetchTasks,
     updateTask,
     deleteTask,
     completeTask,
     uncompleteTask,
     createTask,
+    taskViewMode,
+    setTaskViewMode,
+    weekOffset,
+    monthOffset,
+    weekStart,
+    weekEnd,
+    monthStart,
+    monthEnd,
+    prevWeek,
+    nextWeek,
+    resetWeekOffset,
+    prevMonth,
+    nextMonth,
+    resetMonthOffset,
   } = useTasks();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [mode, setMode] = useState<'weekly' | 'monthly'>('weekly');
-
-  useEffect(() => {
-    void fetchTasks();
-  }, [fetchTasks, mode]);
 
   const handleCreateClose = useCallback(() => {
     setIsCreateOpen(false);
@@ -50,7 +58,25 @@ export const Tasks = () => {
 
   const listHeader = (
     <>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="join shrink-0">
+          <button
+            type="button"
+            className={`btn join-item btn-sm ${taskViewMode === 'weekly' ? 'btn-active' : ''}`}
+            aria-pressed={taskViewMode === 'weekly'}
+            onClick={() => setTaskViewMode('weekly')}
+          >
+            Weekly
+          </button>
+          <button
+            type="button"
+            className={`btn join-item btn-sm ${taskViewMode === 'monthly' ? 'btn-active' : ''}`}
+            aria-pressed={taskViewMode === 'monthly'}
+            onClick={() => setTaskViewMode('monthly')}
+          >
+            Monthly
+          </button>
+        </div>
         <button
           type="button"
           className="btn btn-primary btn-square btn-sm"
@@ -134,16 +160,34 @@ export const Tasks = () => {
         {listHeader}
       </div>
 
-      {mode === 'weekly' ? (
+      {taskViewMode === 'weekly' ? (
         <WeeklyTasks
           tasks={sortedTasks}
+          weekStart={weekStart}
+          weekEnd={weekEnd}
+          weekOffset={weekOffset}
+          onPrevWeek={prevWeek}
+          onNextWeek={nextWeek}
+          onResetWeek={resetWeekOffset}
           completeTask={completeTask}
           uncompleteTask={uncompleteTask}
           updateTask={updateTask}
           deleteTask={deleteTask}
         />
       ) : (
-        <MonthlyTasks />
+        <MonthlyTasks
+          tasks={sortedTasks}
+          monthStart={monthStart}
+          monthEnd={monthEnd}
+          monthOffset={monthOffset}
+          onPrevMonth={prevMonth}
+          onNextMonth={nextMonth}
+          onResetMonth={resetMonthOffset}
+          completeTask={completeTask}
+          uncompleteTask={uncompleteTask}
+          updateTask={updateTask}
+          deleteTask={deleteTask}
+        />
       )}
       <TaskFormModal
         open={isCreateOpen}

@@ -1,65 +1,68 @@
 /**
  * Task list state: load from the API, import from Moodle, update, and delete.
  */
-import { useState, useCallback, useMemo } from 'react';
-import { Task, TaskForm, WeeklyTaskList } from '../../../types/task';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import { Task, TaskForm } from '../../../types/task';
 import { TaskService } from '../services/taskService';
 import { AuthService } from '../../auth/services/authService';
+import {
+  offsetDateByCalendarMonths,
+  offsetDateByWeeks,
+  endOfCurrentMonth,
+  endOfCurrentWeek,
+  startOfCurrentMonth,
+  startOfCurrentWeek,
+} from '../utils';
+
+export {
+  startOfCurrentWeek,
+  endOfCurrentWeek,
+  startOfCurrentMonth,
+  endOfCurrentMonth,
+} from '../utils';
 
 /**
  * Returns task rows, Moodle URL UI state, and handlers wired to TaskService.
  */
-
-
-
-// weekStartsOn: 0 = Sunday, 1 = Monday
-export function startOfCurrentWeek(weekStartsOn: 0 | 1 = 1, date?: Date): Date {
-  const now = date ?? new Date();
-  const day = now.getDay(); // 0..6
-  const diff = (day - weekStartsOn + 7) % 7;
-
-  const start = new Date(now);
-  start.setDate(now.getDate() - diff);
-  start.setHours(0, 0, 0, 0);
-  return start;
-}
-
-export function endOfCurrentWeek(weekStartsOn: 0 | 1 = 1, date?: Date): Date {
-  const end = new Date(startOfCurrentWeek(weekStartsOn, date));
-  end.setDate(end.getDate() + 6);
-  end.setHours(23, 59, 59, 999);
-  return end;
-}
-
-export function startOfCurrentMonth(date?: Date): Date {
-  const start  = date ?? new Date(); // start of the current month
-  start.setDate(1); // set to the first day of the month
-  start.setHours(0, 0, 0, 0); // set to the start of the day
-  return start;
-}
-
-export function endOfCurrentMonth(date?: Date): Date {
-  const end = date ?? new Date(); // end of the current month
-  end.setMonth(end.getMonth() + 1); // set to the next month
-  end.setDate(0); // set to the last day of the month
-  end.setHours(23, 59, 59, 999);
-  return end;
-}
-
-
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const initialUser = AuthService.getCurrentUser();
   const [moodleUrl, setMoodleUrl] = useState<string | null>(
-    Boolean(initialUser?.moodle_url) ? initialUser.moodle_url : null
+    initialUser?.moodle_url ? initialUser.moodle_url : null
   );
   const [isAscending, setIsAscending] = useState<boolean>(true);
   const [hasMoodleUrl, setHasMoodleUrl] = useState<boolean>(
     moodleUrl !== null && moodleUrl !== ''
   );
   const [isMoodleSyncing, setIsMoodleSyncing] = useState(false);
+
+  const [taskViewMode, setTaskViewMode] = useState<'weekly' | 'monthly'>(
+    'weekly'
+  );
+  const [weekOffset, setWeekOffset] = useState(0);
+  const [monthOffset, setMonthOffset] = useState(0);
+
+  const weekStart = useMemo(() => {
+    const anchor = offsetDateByWeeks(new Date(), weekOffset);
+    return startOfCurrentWeek(1, anchor);
+  }, [weekOffset]);
+
+  const weekEnd = useMemo(() => {
+    const anchor = offsetDateByWeeks(new Date(), weekOffset);
+    return endOfCurrentWeek(1, anchor);
+  }, [weekOffset]);
+
+  const monthStart = useMemo(() => {
+    const anchor = offsetDateByCalendarMonths(new Date(), monthOffset);
+    return startOfCurrentMonth(anchor);
+  }, [monthOffset]);
+
+  const monthEnd = useMemo(() => {
+    const anchor = offsetDateByCalendarMonths(new Date(), monthOffset);
+    return endOfCurrentMonth(anchor);
+  }, [monthOffset]);
 
   /** Syncs Moodle calendar; replaces local tasks with the full list returned by the server. */
   const handleSyncMoodleTasks = useCallback(async () => {
@@ -109,28 +112,60 @@ export function useTasks() {
     }
   }, []);
 
-  const fetchWeeklyTasks = useCallback(async ( params?: { start?: string, end?: string } ) => {
-    try {
-      const fetched = await TaskService.getTasks({
-        start: params?.start ?? startOfCurrentWeek().toISOString(),
-        end: params?.end ?? endOfCurrentWeek().toISOString(),
-      });
-      setTasks(fetched);
-    } catch {
-      setErrorMessage('Error fetching weekly tasks');
-    }
+  /** Optional calendar-range fetch (UI uses full `fetchTasks` + client filters). */
+  const fetchWeeklyTasks = useCallback(
+    async (params?: { start?: string; end?: string }) => {
+      try {
+        const fetched = await TaskService.getTasks({
+          start: params?.start ?? startOfCurrentWeek().toISOString(),
+          end: params?.end ?? endOfCurrentWeek().toISOString(),
+        });
+        setTasks(fetched);
+      } catch {
+        setErrorMessage('Error fetching weekly tasks');
+      }
+    },
+    []
+  );
+
+  /** Optional calendar-range fetch (UI uses full `fetchTasks` + client filters). */
+  const fetchMonthlyTasks = useCallback(
+    async (params?: { start?: string; end?: string }) => {
+      try {
+        const fetched = await TaskService.getTasks({
+          start: params?.start ?? startOfCurrentMonth().toISOString(),
+          end: params?.end ?? endOfCurrentMonth().toISOString(),
+        });
+        setTasks(fetched);
+      } catch {
+        setErrorMessage('Error fetching monthly tasks');
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    void fetchTasks();
+  }, [fetchTasks]);
+
+  const prevWeek = useCallback(() => {
+    setWeekOffset((o) => o - 1);
+  }, []);
+  const nextWeek = useCallback(() => {
+    setWeekOffset((o) => o + 1);
+  }, []);
+  const resetWeekOffset = useCallback(() => {
+    setWeekOffset(0);
   }, []);
 
-  const fetchMonthlyTasks = useCallback(async ( params?: { start?: string, end?: string } ) => {
-    try {
-      const fetched = await TaskService.getTasks({
-        start: params?.start ?? startOfCurrentMonth().toISOString(),
-        end: params?.end ?? endOfCurrentMonth().toISOString(),
-      });
-      setTasks(fetched);
-    } catch {
-      setErrorMessage('Error fetching monthly tasks');
-    }
+  const prevMonth = useCallback(() => {
+    setMonthOffset((o) => o - 1);
+  }, []);
+  const nextMonth = useCallback(() => {
+    setMonthOffset((o) => o + 1);
+  }, []);
+  const resetMonthOffset = useCallback(() => {
+    setMonthOffset(0);
   }, []);
 
   /** Persists task changes via PUT and merges the response into local state by id. */
@@ -230,12 +265,26 @@ export function useTasks() {
     handleSyncMoodleTasks,
     isMoodleSyncing,
     fetchTasks,
+    fetchWeeklyTasks,
+    fetchMonthlyTasks,
     updateTask,
     deleteTask,
     createTask,
     completeTask,
     uncompleteTask,
-    fetchWeeklyTasks,
-    fetchMonthlyTasks,
+    taskViewMode,
+    setTaskViewMode,
+    weekOffset,
+    monthOffset,
+    weekStart,
+    weekEnd,
+    monthStart,
+    monthEnd,
+    prevWeek,
+    nextWeek,
+    resetWeekOffset,
+    prevMonth,
+    nextMonth,
+    resetMonthOffset,
   };
 }
