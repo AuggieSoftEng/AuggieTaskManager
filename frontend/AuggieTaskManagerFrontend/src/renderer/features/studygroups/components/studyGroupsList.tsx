@@ -27,10 +27,14 @@ export const StudyGroupList: React.FC<StudyGroupListProps> = ({
   const [showingAll, setShowingAll] = useState(false);
 
   useEffect(() => {
-    fetchMyStudyGroups();
+    if (AuthService.isAuthenticated()) {
+      fetchMyStudyGroups();
+    }
   }, []);
 
   const handleToggle = async () => {
+    if (!AuthService.isAuthenticated()) return;
+
     if (showingAll) {
       await fetchMyStudyGroups();
     } else {

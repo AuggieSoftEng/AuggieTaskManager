@@ -42,6 +42,9 @@ export const DashboardLayout = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const { logOut, error } = useAuth();
+  const [studyGroupKey] = useState(
+    () => AuthService.getCurrentUser()?.user?.id || 'guest'
+  );
 
   // Handle the logout action
   const handleLogout = async () => {
@@ -85,7 +88,7 @@ export const DashboardLayout = () => {
         return (
           <div className="p-4">
             <StudyGroupList
-              key={`${activeItem}-${AuthService.getCurrentUser()?.user?.id || 'guest'}`} // ← forces remount when user changes
+              key={`study-groups-${studyGroupKey}`}
               onCreateClick={() => setActiveItem('Study Groups Create')}
               onEditClick={(groupID) => {
                 setEditingGroupID(groupID);
