@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { AlertCard } from '../common/AlertCard';
 import { StudyGroupList } from '../../features/studygroups/components/studyGroupsList';
 import { SettingsScreen } from '../../features/dashboard/components/Settings';
+import { AuthService } from '../../features/auth/services/authService';
 
 import {
   Menu,
@@ -87,7 +88,7 @@ export const DashboardLayout = () => {
         return (
           <div className="p-4">
             <StudyGroupList
-              key={activeItem} // ← forces remount when navigating back
+              key={`${activeItem}-${AuthService.getCurrentUser()?.user?.id || 'guest'}`} // ← forces remount when user changes
               onCreateClick={() => setActiveItem('Study Groups Create')}
               onEditClick={(groupID) => {
                 setEditingGroupID(groupID);

@@ -5,9 +5,6 @@ import { AuthService } from '../../auth/services/authService';
 import { Lock } from 'lucide-react';
 import { Globe } from 'lucide-react';
 
-const currentUser = AuthService.getCurrentUser();
-const currentUserID = currentUser?.user?.id;
-
 interface StudyGroupListProps {
   onCreateClick: () => void;
   onEditClick: (groupID: number) => void;
@@ -41,6 +38,10 @@ export const StudyGroupList: React.FC<StudyGroupListProps> = ({
     }
     setShowingAll((prev) => !prev);
   };
+
+  // Get current user dynamically - component remounts when user changes
+  const currentUser = AuthService.getCurrentUser();
+  const currentUserID = currentUser?.user?.id;
 
   if (loading) return <p>Loading study groups...</p>;
   if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
