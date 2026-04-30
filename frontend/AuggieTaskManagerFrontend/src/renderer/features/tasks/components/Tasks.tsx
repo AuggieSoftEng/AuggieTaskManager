@@ -18,6 +18,7 @@ export const Tasks = () => {
     setMoodleUrl,
     hasMoodleUrl,
     handleSyncMoodleTasks,
+    revertMoodleUrlFromProfile,
     isMoodleSyncing,
     updateTask,
     deleteTask,
@@ -41,6 +42,19 @@ export const Tasks = () => {
   } = useTasks();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [wantsMoodleUrlUpdate, setWantsMoodleUrlUpdate] = useState(false);
+
+  const handleMoodleSyncAndCloseForm = useCallback(async () => {
+    const ok = await handleSyncMoodleTasks();
+    if (ok) {
+      setWantsMoodleUrlUpdate(false);
+    }
+  }, [handleSyncMoodleTasks]);
+
+  const handleCancelMoodleUrlUpdate = useCallback(() => {
+    revertMoodleUrlFromProfile();
+    setWantsMoodleUrlUpdate(false);
+  }, [revertMoodleUrlFromProfile]);
 
   const handleCreateClose = useCallback(() => {
     setIsCreateOpen(false);
@@ -100,14 +114,24 @@ export const Tasks = () => {
           )}
         </button>
         {hasMoodleUrl && (
-          <button
-            type="button"
-            className="btn btn-outline btn-primary shrink-0 whitespace-nowrap"
-            disabled={isMoodleSyncing}
-            onClick={() => handleSyncMoodleTasks()}
-          >
-            {isMoodleSyncing ? 'Syncing…' : 'Sync from Moodle'}
-          </button>
+          <>
+            <button
+              type="button"
+              className="btn btn-outline btn-primary shrink-0 whitespace-nowrap btn-sm"
+              disabled={isMoodleSyncing}
+              onClick={() => void handleMoodleSyncAndCloseForm()}
+            >
+              {isMoodleSyncing ? 'Syncing…' : 'Sync from Moodle'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost shrink-0 whitespace-nowrap btn-sm"
+              disabled={isMoodleSyncing}
+              onClick={() => setWantsMoodleUrlUpdate(true)}
+            >
+              Change Moodle URL
+            </button>
+          </>
         )}
         <button
           type="button"
@@ -129,11 +153,15 @@ export const Tasks = () => {
           onDismiss={clearErrorMessage}
         />
       )}
-      {!hasMoodleUrl && (
+      {(!hasMoodleUrl || wantsMoodleUrlUpdate) && (
         <div className="rounded-box border border-base-300 bg-base-200/40 p-4 shadow-sm">
           <fieldset className="fieldset">
-            <legend className="fieldset-legend">Moodle calendar URL</legend>
-            <div className="flex flex-row items-stretch gap-2">
+            <legend className="fieldset-legend">
+              {hasMoodleUrl && wantsMoodleUrlUpdate
+                ? 'Replace Moodle calendar URL'
+                : 'Moodle calendar URL'}
+            </legend>
+            <div className="flex flex-row flex-wrap items-stretch gap-2">
               <input
                 type="text"
                 className="input min-w-0 flex-1"
@@ -141,17 +169,35 @@ export const Tasks = () => {
                 value={moodleUrl ?? ''}
                 onChange={(e) => setMoodleUrl(e.target.value)}
               />
-              <button
-                type="button"
-                className="btn btn-primary shrink-0 whitespace-nowrap"
-                disabled={isMoodleSyncing}
-                onClick={handleSyncMoodleTasks}
-              >
-                {isMoodleSyncing ? 'Syncing…' : 'Import Tasks'}
-              </button>
+              <div className="flex shrink-0 flex-wrap gap-2">
+                <button
+                  type="button"
+                  className="btn btn-primary shrink-0 whitespace-nowrap"
+                  disabled={isMoodleSyncing}
+                  onClick={() => void handleMoodleSyncAndCloseForm()}
+                >
+                  {isMoodleSyncing
+                    ? 'Syncing…'
+                    : hasMoodleUrl && wantsMoodleUrlUpdate
+                      ? 'Save & sync'
+                      : 'Import Tasks'}
+                </button>
+                {hasMoodleUrl && wantsMoodleUrlUpdate && (
+                  <button
+                    type="button"
+                    className="btn btn-ghost shrink-0 whitespace-nowrap"
+                    disabled={isMoodleSyncing}
+                    onClick={handleCancelMoodleUrlUpdate}
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
             </div>
             <p className="label mt-1">
-              Add your Moodle URL to your profile to see your tasks here.
+              {hasMoodleUrl && wantsMoodleUrlUpdate
+                ? 'Paste a new calendar URL and save to update your profile and reload tasks.'
+                : 'Add your Moodle URL to your profile to see your tasks here.'}
             </p>
           </fieldset>
         </div>

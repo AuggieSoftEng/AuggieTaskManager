@@ -64,8 +64,13 @@ export function useTasks() {
     return endOfCurrentMonth(anchor);
   }, [monthOffset]);
 
+  const revertMoodleUrlFromProfile = useCallback(() => {
+    const saved = AuthService.getCurrentUser()?.moodle_url;
+    setMoodleUrl(saved != null && saved !== '' ? saved : null);
+  }, []);
+
   /** Syncs Moodle calendar; replaces local tasks with the full list returned by the server. */
-  const handleSyncMoodleTasks = useCallback(async () => {
+  const handleSyncMoodleTasks = useCallback(async (): Promise<boolean> => {
     const url = (
       moodleUrl ??
       AuthService.getCurrentUser()?.moodle_url ??
@@ -73,7 +78,7 @@ export function useTasks() {
     ).trim();
     if (!url) {
       setErrorMessage('Add your Moodle calendar URL to sync.');
-      return;
+      return false;
     }
     setIsMoodleSyncing(true);
     setErrorMessage(null);
@@ -95,8 +100,10 @@ export function useTasks() {
           AuthService.saveUser({ ...current, moodle_url: url });
         }
       }
+      return true;
     } catch {
       setErrorMessage('Error syncing Moodle calendar');
+      return false;
     } finally {
       setIsMoodleSyncing(false);
     }
@@ -263,6 +270,7 @@ export function useTasks() {
     setMoodleUrl,
     hasMoodleUrl,
     handleSyncMoodleTasks,
+    revertMoodleUrlFromProfile,
     isMoodleSyncing,
     fetchTasks,
     fetchWeeklyTasks,
