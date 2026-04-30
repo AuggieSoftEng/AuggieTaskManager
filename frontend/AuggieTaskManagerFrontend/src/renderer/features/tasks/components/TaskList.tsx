@@ -56,7 +56,7 @@ export const TaskList = ({
 
   return (
     <div>
-      <ul className="list bg-base-100 rounded-box shadow-md">
+      <ul className="list divide-y divide-base-300 rounded-box border border-base-200 bg-base-100">
         {tasks.map((task, index) => (
           <li className="list-row" key={task.id}>
             <div className="w-8 shrink-0 text-right text-lg font-thin opacity-30 tabular-nums">
