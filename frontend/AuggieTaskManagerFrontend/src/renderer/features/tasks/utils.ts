@@ -15,6 +15,26 @@ export const WEEKDAYS: readonly DayOfWeek[] = [
   'Sunday',
 ] as const;
 
+/** Local calendar date at midnight — for same-day comparisons. */
+export function startOfLocalDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+export function isSameLocalCalendarDay(
+  firstDate: Date,
+  secondDate: Date
+): boolean {
+  return (
+    startOfLocalDay(firstDate).getTime() ===
+    startOfLocalDay(secondDate).getTime()
+  );
+}
+
+/** Monday-first weekday label, aligned with `buildWeeklyTaskLists`. */
+export function weekdayLabelForLocalDate(date: Date): DayOfWeek {
+  return WEEKDAYS[(date.getDay() + 6) % 7];
+}
+
 // weekStartsOn: 0 = Sunday, 1 = Monday
 export function startOfCurrentWeek(weekStartsOn: 0 | 1 = 1, date?: Date): Date {
   const anyDayInTargetWeek = date ?? new Date();

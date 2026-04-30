@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 import { TaskList } from './TaskList';
 import { Task } from '../../../types/task';
-import { buildTasksByCalendarDays, NO_TASKS_LABEL } from '../utils';
+import {
+  buildTasksByCalendarDays,
+  NO_TASKS_LABEL,
+  isSameLocalCalendarDay,
+} from '../utils';
 
 export interface MonthlyTasksProps {
   tasks: Task[];
@@ -47,6 +51,7 @@ export const MonthlyTasks = ({
   );
 
   const monthTitle = monthTitleFormatter.format(monthStart);
+  const today = new Date();
 
   return (
     <div className="space-y-4">
@@ -85,24 +90,34 @@ export const MonthlyTasks = ({
         </div>
       </div>
 
-      {dayBuckets.map(({ date, tasks: dayTasks }) => (
-        <div key={date.toISOString()}>
-          <h2 className="text-2xl font-bold">
-            {dayHeadingFormatter.format(date)}
-          </h2>
-          {dayTasks.length === 0 ? (
-            <p className="text-sm opacity-70">{NO_TASKS_LABEL}</p>
-          ) : (
-            <TaskList
-              tasks={dayTasks}
-              completeTask={completeTask}
-              uncompleteTask={uncompleteTask}
-              updateTask={updateTask}
-              deleteTask={deleteTask}
-            />
-          )}
-        </div>
-      ))}
+      {dayBuckets.map(({ date: bucketDate, tasks: dayTasks }) => {
+        const isTodaySection = isSameLocalCalendarDay(bucketDate, today);
+        return (
+          <div
+            key={bucketDate.toISOString()}
+            className={
+              'rounded-box border border-base-300 bg-base-100 p-2 ' +
+              (isTodaySection ? 'ring-2 ring-primary ring-inset ' : '')
+            }
+            aria-current={isTodaySection ? 'date' : undefined}
+          >
+            <h2 className="text-2xl font-bold">
+              {dayHeadingFormatter.format(bucketDate)}
+            </h2>
+            {dayTasks.length === 0 ? (
+              <p className="text-sm opacity-70">{NO_TASKS_LABEL}</p>
+            ) : (
+              <TaskList
+                tasks={dayTasks}
+                completeTask={completeTask}
+                uncompleteTask={uncompleteTask}
+                updateTask={updateTask}
+                deleteTask={deleteTask}
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };

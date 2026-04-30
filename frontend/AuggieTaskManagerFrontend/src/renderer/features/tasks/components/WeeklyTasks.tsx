@@ -1,7 +1,13 @@
 import { useMemo } from 'react';
 import { TaskList } from './TaskList';
 import { Task, type DayOfWeek } from '../../../types/task';
-import { buildWeeklyTaskLists, WEEKDAYS, NO_TASKS_LABEL } from '../utils';
+import {
+  buildWeeklyTaskLists,
+  WEEKDAYS,
+  NO_TASKS_LABEL,
+  startOfLocalDay,
+  weekdayLabelForLocalDate,
+} from '../utils';
 
 export interface WeeklyTasksProps {
   tasks: Task[];
@@ -42,6 +48,12 @@ export const WeeklyTasks = ({
     () => buildWeeklyTaskLists(tasks, weekStart, weekEnd),
     [tasks, weekStart, weekEnd]
   );
+
+  const today = new Date();
+  const todayAtMidnight = startOfLocalDay(today);
+  const isTodayInsideDisplayedWeek =
+    todayAtMidnight >= weekStart && todayAtMidnight <= weekEnd;
+  const todayWeekdayLabel = weekdayLabelForLocalDate(today);
 
   return (
     <div className="space-y-4">
@@ -84,8 +96,17 @@ export const WeeklyTasks = ({
 
       {WEEKDAYS.map((day: DayOfWeek) => {
         const dayTasks = weeklyTasks[day];
+        const isTodaySection =
+          isTodayInsideDisplayedWeek && day === todayWeekdayLabel;
         return (
-          <div key={day}>
+          <div
+            key={day}
+            className={
+              'rounded-box border border-base-300 bg-base-100 p-2 ' +
+              (isTodaySection ? 'ring-2 ring-primary ring-inset ' : '')
+            }
+            aria-current={isTodaySection ? 'date' : undefined}
+          >
             <h2 className="text-2xl font-bold">{day}</h2>
             {dayTasks.length === 0 ? (
               <p className="text-sm opacity-70">{NO_TASKS_LABEL}</p>
