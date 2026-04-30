@@ -7,10 +7,7 @@ import { AlertCard } from '../../../components/common/AlertCard';
 import { useTasks } from '../hooks/useTasks';
 import { Task, TaskForm } from '../../../types/task';
 
-type TaskModalState =
-  | { mode: 'create' }
-  | { mode: 'edit'; task: Task }
-  | null;
+type TaskModalState = { mode: 'create' } | { mode: 'edit'; task: Task } | null;
 
 function toDateTimeLocal(iso: string | null | undefined): string {
   if (!iso) return '';

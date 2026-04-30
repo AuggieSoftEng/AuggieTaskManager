@@ -223,9 +223,7 @@ export function useTasks() {
         b.due_date != null && b.due_date !== ''
           ? new Date(b.due_date).getTime()
           : Number.POSITIVE_INFINITY;
-      return isAscending
-        ? aTime - bTime
-        : bTime - aTime;
+      return isAscending ? aTime - bTime : bTime - aTime;
     });
   }, [tasks, isAscending]);
 
