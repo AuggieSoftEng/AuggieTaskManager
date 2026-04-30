@@ -61,7 +61,8 @@ export const TaskCard = ({
   const trimmedDescription =
     typeof task.description === 'string' ? task.description.trim() : '';
   const hasDescription = trimmedDescription !== '';
-  const canExpandDescription = hasDescription && trimmedDescription.length > 160;
+  const canExpandDescription =
+    hasDescription && trimmedDescription.length > 160;
   const rawDue =
     typeof task.due_date === 'string' && task.due_date !== ''
       ? task.due_date
@@ -152,7 +153,9 @@ export const TaskCard = ({
               <button
                 type="button"
                 className="btn btn-link btn-xs h-auto px-0"
-                onClick={() => setIsDescriptionExpanded((isExpanded) => !isExpanded)}
+                onClick={() =>
+                  setIsDescriptionExpanded((isExpanded) => !isExpanded)
+                }
                 aria-expanded={isDescriptionExpanded}
               >
                 {isDescriptionExpanded ? 'Show less' : 'Show more'}
