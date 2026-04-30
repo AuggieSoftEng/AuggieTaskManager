@@ -113,6 +113,7 @@ export function filterTasksDueInRange(
   rangeEnd: Date
 ): Task[] {
   return tasks.filter((task) => {
+    if (!task.due_date) return false;
     const dueDate = new Date(task.due_date);
     if (Number.isNaN(dueDate.getTime())) return false;
     return dueDate >= rangeStart && dueDate <= rangeEnd;
@@ -130,6 +131,7 @@ export function buildWeeklyTaskLists(
   ) as WeeklyTaskList;
 
   tasksInWeek.forEach((task) => {
+    if (!task.due_date) return;
     const dayLabel = weekdayLabelForLocalDate(new Date(task.due_date));
     grouped[dayLabel].push(task);
   });
@@ -154,6 +156,7 @@ export function buildTasksByCalendarDays(
 
   const tasksByDayMap = new Map<number, Task[]>();
   tasksInMonth.forEach((task) => {
+    if (!task.due_date) return;
     const dueDate = new Date(task.due_date);
     const day = dueDate.getDate();
     const list = tasksByDayMap.get(day) ?? [];
