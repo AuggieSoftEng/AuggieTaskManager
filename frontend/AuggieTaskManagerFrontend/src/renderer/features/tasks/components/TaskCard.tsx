@@ -48,6 +48,7 @@ export const TaskCard = ({
   onDelete,
 }: TaskCardProps) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
@@ -60,6 +61,7 @@ export const TaskCard = ({
   const trimmedDescription =
     typeof task.description === 'string' ? task.description.trim() : '';
   const hasDescription = trimmedDescription !== '';
+  const canExpandDescription = hasDescription && trimmedDescription.length > 160;
   const rawDue =
     typeof task.due_date === 'string' && task.due_date !== ''
       ? task.due_date
@@ -115,7 +117,7 @@ export const TaskCard = ({
                       <span>{dueParts.dateLabel}</span>
                       <span className="opacity-60">
                         {' '}
-                        · {dueParts.timeLabel}
+                        - {dueParts.timeLabel}
                       </span>
                     </>
                   ) : (
@@ -138,9 +140,25 @@ export const TaskCard = ({
         )}
 
         {hasDescription && (
-          <p className="line-clamp-2 text-sm opacity-75">
-            {trimmedDescription}
-          </p>
+          <div className="space-y-1">
+            <p
+              className={`text-sm opacity-75 ${
+                isDescriptionExpanded ? '' : 'line-clamp-2'
+              }`}
+            >
+              {trimmedDescription}
+            </p>
+            {canExpandDescription && (
+              <button
+                type="button"
+                className="btn btn-link btn-xs h-auto px-0"
+                onClick={() => setIsDescriptionExpanded((isExpanded) => !isExpanded)}
+                aria-expanded={isDescriptionExpanded}
+              >
+                {isDescriptionExpanded ? 'Show less' : 'Show more'}
+              </button>
+            )}
+          </div>
         )}
       </div>
 
