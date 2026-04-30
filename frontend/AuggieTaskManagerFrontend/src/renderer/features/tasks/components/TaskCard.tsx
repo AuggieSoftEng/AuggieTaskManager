@@ -80,7 +80,7 @@ export const TaskCard = ({
               task.source === 'moodle' ? 'Imported from Moodle' : 'Made by User'
             }
           >
-            {task.source === 'moodle' ? 'Moodle' : 'User'}
+            {task.source === 'moodle' ? 'Moodle' : 'Manual'}
           </span>
           <h2
             className={`min-w-0 flex-1 truncate text-base font-semibold ${
