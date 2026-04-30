@@ -119,7 +119,6 @@ export function useTasks() {
     }
   }, []);
 
-
   useEffect(() => {
     void fetchTasks();
   }, [fetchTasks]);
