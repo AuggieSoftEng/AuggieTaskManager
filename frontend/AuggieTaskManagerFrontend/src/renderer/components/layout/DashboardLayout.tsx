@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { AlertCard } from '../common/AlertCard';
 import { StudyGroupList } from '../../features/studygroups/components/studyGroupsList';
 import { SettingsScreen } from '../../features/dashboard/components/Settings';
+import { AuthService } from '../../features/auth/services/authService';
 
 import {
   Menu,
@@ -41,6 +42,7 @@ export const DashboardLayout = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const { logOut, error } = useAuth();
+  const studyGroupKey = AuthService.getCurrentUser()?.user?.id || 'guest';
 
   // Handle the logout action
   const handleLogout = async () => {
@@ -82,14 +84,16 @@ export const DashboardLayout = () => {
         return <TaskCalendar />;
       case 'Study Groups':
         return (
-          <StudyGroupList
-            key={activeItem}
-            onCreateClick={() => setActiveItem('Study Groups Create')}
-            onEditClick={(groupID) => {
-              setEditingGroupID(groupID);
-              setActiveItem('Study Groups Edit');
-            }}
-          />
+          <div className="p-4">
+            <StudyGroupList
+              key={`study-groups-${studyGroupKey}`}
+              onCreateClick={() => setActiveItem('Study Groups Create')}
+              onEditClick={(groupID) => {
+                setEditingGroupID(groupID);
+                setActiveItem('Study Groups Edit');
+              }}
+            />
+          </div>
         );
       case 'Study Groups Create':
         return (
