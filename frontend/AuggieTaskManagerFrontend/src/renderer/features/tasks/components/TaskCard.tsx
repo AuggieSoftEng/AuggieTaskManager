@@ -1,6 +1,7 @@
 // Task detail card
 import { Task } from '../../../types/task';
 import { TrashIcon, CheckIcon, X, Pencil, CalendarDays } from 'lucide-react';
+import { useState } from 'react';
 
 export interface TaskCardProps {
   task: Task;
@@ -35,6 +36,16 @@ export const TaskCard = ({
   onEdit,
   onDelete,
 }: TaskCardProps) => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const openDeleteModal = () => setShowDeleteModal(true);
+  const closeDeleteModal = () => setShowDeleteModal(false);
+
+  const confirmDelete = () => {
+    onDelete?.();
+    closeDeleteModal();
+  };
+
   const trimmedDescription =
     typeof task.description === 'string' ? task.description.trim() : '';
   const hasDescription = trimmedDescription !== '';
@@ -57,12 +68,12 @@ export const TaskCard = ({
         <div className="flex min-w-0 items-center gap-2">
           <h2
             className={`min-w-0 flex-1 truncate text-base font-semibold ${
-              task.completed ? 'text-base-content line-through opacity-70' : ''
+              task.completed ? 'line-through opacity-70' : ''
             }`}
           >
             {task.title}
           </h2>
-          {task.source === 'manual' && (
+          {onEdit && (
             <button
               type="button"
               className="btn btn-square btn-sm btn-ghost shrink-0"
@@ -151,11 +162,41 @@ export const TaskCard = ({
           className="btn btn-square btn-sm btn-error"
           aria-label="Delete task"
           title="Delete task"
-          onClick={onDelete}
+          onClick={openDeleteModal}
         >
           <TrashIcon className="h-4 w-4" aria-hidden />
         </button>
       </div>
+
+      {showDeleteModal && (
+        <div className="modal modal-open" role="dialog" aria-modal="true">
+          <div className="modal-box">
+            <h3 className="text-lg font-bold">Delete task?</h3>
+            <p className="py-2">
+              Are you sure you want to delete{' '}
+              <span className="font-semibold">{task.title}</span>?
+            </p>
+            <div className="modal-action">
+              <button type="button" className="btn" onClick={closeDeleteModal}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-error"
+                onClick={confirmDelete}
+              >
+                Confirm Delete
+              </button>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="modal-backdrop"
+            aria-label="Close delete confirmation"
+            onClick={closeDeleteModal}
+          />
+        </div>
+      )}
     </div>
   );
 };
